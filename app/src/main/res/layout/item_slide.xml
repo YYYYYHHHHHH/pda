@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.domn.commpont.SlideLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="380dp"
+        android:layout_height="60dp"
+        android:text="content"
+        android:textSize="15sp"
+        android:background="#d7d7d7"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/menu"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:text="删除"
+        android:textSize="15sp"
+        android:background="#ff0000"
+        android:gravity="center"
+        android:padding="8dp"/>
+</com.example.domn.commpont.SlideLayout>

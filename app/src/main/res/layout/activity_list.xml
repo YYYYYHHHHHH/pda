@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+    <EditText
+        android:id="@+id/inputCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="手动添加条形码"
+        android:inputType="textPersonName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/inputButton"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:text="添加"
+        android:background="@drawable/shape"
+        app:layout_constraintBottom_toBottomOf="@+id/inputCode"
+        app:layout_constraintLeft_toRightOf="@+id/inputCode"
+        app:layout_constraintTop_toTopOf="@+id/inputCode" />
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="395dp"
+        android:layout_height="428dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputCode">
+
+        <com.example.domn.commpont.MyListView
+            android:id="@+id/codeitem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="73dp" >
+        </com.example.domn.commpont.MyListView>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/numberText"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:text="记数：0件"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollview" />
+
+    <Button
+        android:background="@drawable/shape"
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="清空"
+        app:layout_constraintBottom_toBottomOf="@+id/submit"
+        app:layout_constraintLeft_toRightOf="@+id/submit"
+        app:layout_constraintTop_toTopOf="@+id/submit" />
+
+    <Button
+        android:background="@drawable/shape"
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="提交"
+        app:layout_constraintBottom_toBottomOf="@+id/numberText"
+        app:layout_constraintStart_toEndOf="@+id/numberText"
+        app:layout_constraintTop_toTopOf="@+id/numberText" />
+</android.support.constraint.ConstraintLayout>
