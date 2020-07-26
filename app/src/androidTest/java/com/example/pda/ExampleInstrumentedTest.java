@@ -1,10 +1,10 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.domn.commpont.MyTwoContent;
+import com.example.pda.commpont.MyTwoContent;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

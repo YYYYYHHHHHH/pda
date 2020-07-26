@@ -1,6 +1,4 @@
-package com.example.domn.bean;
-
-import com.example.domn.ListActivity;
+package com.example.pda.bean;
 
 import java.util.List;
 

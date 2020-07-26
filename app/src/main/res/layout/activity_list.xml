@@ -43,13 +43,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputCode">
 
-        <com.example.domn.commpont.MyListView
+        <com.example.pda.commpont.MyListView
             android:id="@+id/codeitem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="73dp" >
-        </com.example.domn.commpont.MyListView>
+        </com.example.pda.commpont.MyListView>
     </ScrollView>
 
     <TextView

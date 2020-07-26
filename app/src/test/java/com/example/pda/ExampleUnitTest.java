@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import org.junit.Test;
 

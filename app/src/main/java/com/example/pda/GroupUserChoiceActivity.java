@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,8 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.example.domn.bean.CustomerBean;
-import com.example.domn.bean.CustomerListBean;
+import com.example.pda.bean.CustomerBean;
+import com.example.pda.bean.CustomerListBean;
 import com.google.gson.Gson;
 
 import java.io.IOException;

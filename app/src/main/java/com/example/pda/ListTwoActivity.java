@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -30,11 +30,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.domn.bean.BarCodeBean;
-import com.example.domn.bean.BarCodeTwoBean;
-import com.example.domn.bean.UserBean;
-import com.example.domn.commpont.MyTwoContent;
-import com.example.domn.commpont.SlideLayout;
+import com.example.pda.bean.BarCodeBean;
+import com.example.pda.bean.BarCodeTwoBean;
+import com.example.pda.bean.UserBean;
+import com.example.pda.commpont.MyTwoContent;
+import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;

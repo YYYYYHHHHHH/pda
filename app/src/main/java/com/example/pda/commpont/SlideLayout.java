@@ -1,4 +1,4 @@
-package com.example.domn.commpont;
+package com.example.pda.commpont;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.example.domn.R;
+import com.example.pda.R;
 
 public class SlideLayout extends FrameLayout {
 

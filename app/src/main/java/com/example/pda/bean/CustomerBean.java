@@ -1,4 +1,4 @@
-package com.example.domn.bean;
+package com.example.pda.bean;
 
 public class CustomerBean {
     private String custId;

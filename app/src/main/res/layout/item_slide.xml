@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.domn.commpont.SlideLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.pda.commpont.SlideLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <TextView
         android:id="@+id/content"
@@ -18,4 +18,4 @@
         android:background="#ff0000"
         android:gravity="center"
         android:padding="8dp"/>
-</com.example.domn.commpont.SlideLayout>
+</com.example.pda.commpont.SlideLayout>

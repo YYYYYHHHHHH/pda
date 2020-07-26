@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,21 +25,16 @@ import android.widget.TextView;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.widget.Toast;
 
-import com.example.domn.bean.LoginBean;
-import com.example.domn.bean.MenuBean;
-import com.example.domn.bean.MenuBgBean;
-import com.example.domn.bean.UserBean;
+import com.example.pda.bean.MenuBean;
+import com.example.pda.bean.MenuBgBean;
+import com.example.pda.bean.UserBean;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
-import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MenuActivity extends Activity {

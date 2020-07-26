@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -6,32 +6,14 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.device.ScanManager;
 import android.device.scanner.configuration.PropertyID;
-import android.device.scanner.configuration.Symbology;
-import android.device.scanner.configuration.Triggering;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScannerActivity extends Activity {
 

@@ -1,9 +1,8 @@
-package com.example.domn.bean;
+package com.example.pda.bean;
 
-public class UserBean {
+public class BarCodeBean {
     private String Status;
-    private  String Msg;
-    private String User;
+    private String Msg;
 
     public String getStatus() {
         return Status;
@@ -20,14 +19,4 @@ public class UserBean {
     public void setMsg(String msg) {
         Msg = msg;
     }
-
-    public String getUser() {
-        return User;
-    }
-
-    public void setUser(String user) {
-        User = user;
-    }
 }
-
-

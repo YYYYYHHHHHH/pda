@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.domn">
+    package="com.example.pda">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -12,21 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ListActivity">
+        <activity android:name="com.example.pda.ListActivity">
 
         </activity>
-        <activity android:name=".ListTwoActivity">
+        <activity android:name="com.example.pda.ListTwoActivity">
 
         </activity>
-        <activity android:name=".ScannerActivity">
-
-        </activity>
-
-        <activity android:name=".MenuActivity">
+        <activity android:name="com.example.pda.ScannerActivity">
 
         </activity>
 
-        <activity android:name=".LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
+        <activity android:name="com.example.pda.MenuActivity">
+
+        </activity>
+
+        <activity android:name="com.example.pda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,15 +34,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ChoiceHouse">
+        <activity android:name="com.example.pda.ChoiceHouse">
 
         </activity>
 
-        <activity android:name=".GroupUserChoiceActivity">
+        <activity android:name="com.example.pda.GroupUserChoiceActivity">
 
         </activity>
 
-        <activity android:name=".testActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
+        <activity android:name="com.example.pda.testActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
 
         </activity>
     </application>

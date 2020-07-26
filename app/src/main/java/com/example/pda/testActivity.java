@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,9 +11,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.domn.R;
-import com.example.domn.commpont.MyContent;
-import com.example.domn.commpont.SlideLayout;
+import com.example.pda.R;
+import com.example.pda.commpont.MyContent;
+import com.example.pda.commpont.SlideLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;

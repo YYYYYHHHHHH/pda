@@ -1,4 +1,4 @@
-package com.example.domn;
+package com.example.pda;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,22 +7,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
-import com.example.domn.bean.UserBean;
-import com.example.domn.bean.WhBean;
-import com.example.domn.bean.WhListBean;
+import com.example.pda.bean.UserBean;
+import com.example.pda.bean.WhBean;
+import com.example.pda.bean.WhListBean;
 import com.google.gson.Gson;
 
 import java.io.IOException;
