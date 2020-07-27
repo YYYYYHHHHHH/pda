@@ -89,6 +89,7 @@ public class ListTwoActivity extends Activity {
     private Toast toast = MyToast.getToast();
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private ArrayList<MyTwoContent> strArr = null;
+    private AlertDialog.Builder alert = new AlertDialog.Builder(ListTwoActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -354,7 +355,7 @@ public class ListTwoActivity extends Activity {
                     toast.show();
                 } else {
                     if ( !"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(ListTwoActivity.this).setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
+                        alert.setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
                                 .setIcon(android.R.drawable.ic_dialog_info)
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
@@ -402,7 +403,7 @@ public class ListTwoActivity extends Activity {
                     MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
-                    new AlertDialog.Builder(ListTwoActivity.this).setMessage("组托单号为：【" + mesg + "】")
+                    alert.setMessage("组托单号为：【" + mesg + "】")
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
