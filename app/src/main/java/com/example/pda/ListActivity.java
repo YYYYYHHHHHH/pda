@@ -38,6 +38,11 @@ import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,7 +52,20 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+@ContentView(R.layout.activity_list)
 public class ListActivity extends Activity {
+    @ViewInject(R.id.numberText)
+    private TextView numberText;
+    @ViewInject(R.id.inputCode)
+    private EditText inputCode;
+    @ViewInject(R.id.codeitem)
+    private ListView listView;
+    @ViewInject(R.id.inputButton)
+    private Button inputButton;
+    @ViewInject(R.id.clear)
+    private Button clear;
+    @ViewInject(R.id.submit)
+    private Button submit;
     private final static String SCAN_ACTION = ScanManager.ACTION_DECODE;//default action
     private boolean isScaning = false;
     private SoundPool soundpool = null;
@@ -58,8 +76,25 @@ public class ListActivity extends Activity {
     private String whId;
     private Set<SlideLayout> sets = new HashSet();
     private Toast toast;
-
     private int soundid;
+    private final OkHttpClient client = new OkHttpClient();
+    private ArrayList<MyContent> strArr = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        x.view().inject(this);
+        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
+        Intent intent = getIntent();
+        whId = intent.getStringExtra("whId");
+        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP, 0, 70);
+        this.listView();
+    }
+
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -78,49 +113,6 @@ public class ListActivity extends Activity {
                 return;
             }
             checkBarCode(barcodeStr);
-        }
-    };
-    final OkHttpClient client = new OkHttpClient();
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            dialog.cancel();
-            if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息", ReturnMessage);
-                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
-                int status = Integer.parseInt(barCodeBean.getStatus());
-                String mesg = barCodeBean.getMsg();
-                if (status != 0) {
-                    if (status == -100) {
-                        mesg += "，或者扫描不清晰";
-                    }
-                    toast.setText(mesg);
-                    toast.show();
-                } else {
-                    strArr.add(new MyContent(barcodeStr));
-                    MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
-                    listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
-                }
-            } else if (msg.what == 2) {
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息", ReturnMessage);
-                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
-                int status = Integer.parseInt(barCodeBean.getStatus());
-                String mesg = barCodeBean.getMsg();
-
-                toast.setText(mesg);
-                toast.show();
-                if (status != 0) {
-
-                } else {
-                    strArr.clear();
-                    MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
-                    listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
-                }
-            }
         }
     };
 
@@ -163,42 +155,8 @@ public class ListActivity extends Activity {
         unregisterReceiver(mScanReceiver);
     }
 
-    private TextView numberText = null;
-    private EditText inputCode = null;
-    private ListView listView = null;
-    private ArrayList<MyContent> strArr = null;
-    private Button inputButton = null;
-    private Button clear = null;
-    private Button submit = null;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        this.inputCode = (EditText) findViewById(R.id.inputCode);
-        this.listView = (ListView) findViewById(R.id.codeitem);
-        this.numberText = (TextView) findViewById(R.id.numberText);
-        this.clear = (Button) findViewById(R.id.clear);
-        this.inputButton = (Button) findViewById(R.id.inputButton);
-        this.submit = (Button) findViewById(R.id.submit);
-
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
-        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-        Intent intent = getIntent();
-        whId = intent.getStringExtra("whId");
-        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, 70);
-        this.inputCode();
-        this.listView();
-        this.initClaer();
-        this.initInputButton();
-        this.initSubmit();
-
-    }
-
-    private void initSubmit() {
+    @Event(R.id.submit)
+    private void initSubmit(View view) {
         this.submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,7 +183,8 @@ public class ListActivity extends Activity {
         });
     }
 
-    private void initInputButton() {
+    @Event(R.id.inputButton)
+    private void initInputButton(View view) {
         this.inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,7 +205,8 @@ public class ListActivity extends Activity {
 
     }
 
-    private void initClaer() {
+    @Event(R.id.clear)
+    private void initClaer(View view) {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,7 +232,8 @@ public class ListActivity extends Activity {
         });
     }
 
-    private void inputCode() {
+    @Event(R.id.inputCode)
+    private void inputCode(View view) {
         inputCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -358,6 +319,49 @@ public class ListActivity extends Activity {
         MyAdapter myAdapter = new ListActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            dialog.cancel();
+            if (msg.what == 1) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+                int status = Integer.parseInt(barCodeBean.getStatus());
+                String mesg = barCodeBean.getMsg();
+                if (status != 0) {
+                    if (status == -100) {
+                        mesg += "，或者扫描不清晰";
+                    }
+                    toast.setText(mesg);
+                    toast.show();
+                } else {
+                    strArr.add(new MyContent(barcodeStr));
+                    MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
+                    listView.setAdapter(myAdapter);
+                    numberText.setText("记数：" + strArr.size() + "件");
+                }
+            } else if (msg.what == 2) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+                int status = Integer.parseInt(barCodeBean.getStatus());
+                String mesg = barCodeBean.getMsg();
+
+                toast.setText(mesg);
+                toast.show();
+                if (status != 0) {
+
+                } else {
+                    strArr.clear();
+                    MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
+                    listView.setAdapter(myAdapter);
+                    numberText.setText("记数：" + strArr.size() + "件");
+                }
+            }
+        }
+    };
 
     class MyAdapter extends BaseAdapter {
         private Context content;
