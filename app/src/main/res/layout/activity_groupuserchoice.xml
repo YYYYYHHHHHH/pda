@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="100dp"
         android:text="客户："
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/shape"
         android:text="清空"
         app:layout_constraintStart_toEndOf="@+id/next"
@@ -50,13 +50,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/clear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/clear"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/search"
         android:layout_width="253dp"
         android:layout_height="42dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/shape"
         android:text="搜索"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,10 +67,20 @@
         android:id="@+id/isGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
         android:text="是否同型号组托"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search" />
+    <TextView
+        android:id="@+id/groupnum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="组托数量为：12件"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/isGroup"
+        app:layout_constraintStart_toEndOf="@+id/isGroup"
+        app:layout_constraintTop_toTopOf="@+id/isGroup" />
 
 </android.support.constraint.ConstraintLayout>

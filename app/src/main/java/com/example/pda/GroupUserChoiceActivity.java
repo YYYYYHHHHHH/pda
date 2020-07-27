@@ -2,11 +2,13 @@ package com.example.pda;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -14,11 +16,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.example.pda.bean.CustomerBean;
 import com.example.pda.bean.CustomerListBean;
+import com.example.pda.bean.WhBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
 import com.google.gson.Gson;
@@ -31,6 +36,8 @@ import org.xutils.x;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -51,15 +58,28 @@ public class GroupUserChoiceActivity extends Activity {
     private Button next;
     @ViewInject(R.id.isGroup)
     private CheckBox isGroup;
+    @ViewInject(R.id.groupnum)
+    private TextView groupnum;
+
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private Toast toast = MyToast.getToast();
     private List<CustomerBean> customerList;
     private String csId = "";
     private String csName = "";
+    private List<String> numList;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         x.view().inject(this);
+        numList = new ArrayList<>();
+        for (int i = 1; i < 36; i++) {
+            String item = "";
+            item += i;
+            if (item.length() == 1)
+                item = "0" + item;
+            numList.add(item);
+        }
+
         this.initUserName();
     }
 
@@ -75,6 +95,44 @@ public class GroupUserChoiceActivity extends Activity {
         intent.putExtra("isGroup", isGroup.isChecked());
         intent.putExtra("csName", csName);
         startActivity(intent);
+    }
+
+    @Event(R.id.groupnum)
+    private void initGroupnum(View view) {
+        this.hintKbTwo();
+        OptionsPickerView pvOptions = new OptionsPickerView.Builder(GroupUserChoiceActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                final String s = numList.get(options1);
+                if (!s.equals("12")) {
+                    new AlertDialog.Builder(GroupUserChoiceActivity.this).setTitle("确认要更改组托单数量吗")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    groupnum.setText("组托数量为：" + s + "件");
+                                }
+                            })
+                            .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
+                }
+
+            }
+        })
+                .setDividerColor(Color.BLACK)
+                .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
+                .setContentTextSize(20)//设置文字大小
+                .setOutSideCancelable(false)// default is true
+                .setTitleText("选择组托数量")
+                .setCancelText("取消")
+                .setSubmitText("确定")
+                .build();
+        pvOptions.setPicker(numList);//条件选择器
+        pvOptions.setSelectOptions(numList.indexOf("12"));
+        pvOptions.show();
     }
 
     private void getUserList() {
