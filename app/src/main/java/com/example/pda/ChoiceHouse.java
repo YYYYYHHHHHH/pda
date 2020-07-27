@@ -61,9 +61,9 @@ public class ChoiceHouse extends AppCompatActivity {
         setContentView(R.layout.activity_choicehouse);
         SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-        Toast ts = Toast.makeText(getBaseContext(),"欢迎回来：" + userBean.getUser(),Toast.LENGTH_LONG);
-        ts.setGravity(Gravity.TOP,0,70);
-        ts.show();
+//        Toast ts = Toast.makeText(getBaseContext(),"欢迎回来：" + userBean.getUser(),Toast.LENGTH_LONG);
+//        ts.setGravity(Gravity.TOP,0,70);
+//        ts.show();
         Intent intent = getIntent();
         menuid = intent.getStringExtra("menuid");
         getWhList();

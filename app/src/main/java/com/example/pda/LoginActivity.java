@@ -1,4 +1,5 @@
 package com.example.pda;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.ViewUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.example.pda.bean.LoginBean;
 import com.example.pda.bean.UserBean;
+import com.example.pda.bean.globalbean.MyOkHttpClient;
+import com.example.pda.bean.globalbean.MyToast;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
@@ -30,6 +33,9 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -40,7 +46,7 @@ import okhttp3.Response;
 
 
 @ContentView(R.layout.activity_loginactivity)
-public class LoginActivity extends Activity implements View.OnLayoutChangeListener{
+public class LoginActivity extends Activity implements View.OnLayoutChangeListener {
     //用xUtils进行控件绑定
     @ViewInject(R.id.iv_login_logo)
     ImageView iv_login_logo;
@@ -56,22 +62,26 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     EditText pass;
     @ViewInject(R.id.login)
     Button btn;
+    private Toast toast;
     private ZLoadingDialog dialog;
     private int screenHeight = 0;//屏幕高度
     private int keyHeight = 0; //软件盘弹起后所占高度
-    final OkHttpClient client = new OkHttpClient();
+    public static Context context;
+    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        x.view().inject(this);//控件绑定
+        x.view().inject(this);
         screenHeight = this.getWindowManager().getDefaultDisplay().getHeight(); //获取屏幕高度
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
+        this.context = getBaseContext();
+        toast = MyToast.getToast();
         SharedPreferences setinfo = getPreferences(Activity.MODE_PRIVATE);
         String isSave = setinfo.getString("isSave", "0");
         if ("1".equals(isSave)) {
             this.isSave.setChecked(true);
             name.setText(setinfo.getString("name", ""));
-            pass.setText(setinfo.getString("pass",""));
+            pass.setText(setinfo.getString("pass", ""));
         }
     }
 
@@ -79,7 +89,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private void onClick(View view) {
         String username = name.getText().toString().trim();
         String password = pass.getText().toString().trim();
-        postRequest(username,password);
+        postRequest(username, password);
     }
 
     @Override
@@ -111,12 +121,13 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             ll_login_logobg.setLayoutParams(lp);
         }
     }
-    private void postRequest(String username,String password)  {
+
+    private void postRequest(String username, String password) {
         //建立请求表单，添加上传服务器的参数
         RequestBody formBody = FormBody.create(MediaType.parse("application/json"), new Gson().toJson(new LoginBean(username, password)));
         //发起请求
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/UserLogin?username="+ username + "&" + "password=" + password)
+                .url("http://192.168.11.243/FirstPDAServer/home/UserLogin?username=" + username + "&" + "password=" + password)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(LoginActivity.this);
@@ -141,17 +152,28 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                         throw new IOException("Unexpected code:" + response);
                     }
                 } catch (IOException e) {
+                    dialog.cancel();
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();
     }
-    private Handler mHandler = new Handler(){
+
+    private Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
                 String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息",ReturnMessage);
+                Log.i("获取的返回信息", ReturnMessage);
                 final UserBean userBean = new Gson().fromJson(ReturnMessage, UserBean.class);
                 final int status = Integer.parseInt(userBean.getStatus());
                 final String mes = userBean.getMsg();
@@ -176,7 +198,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                     LoginActivity.this.finish();
                     startActivity(i);
                 } else {
-                    Toast ts = Toast.makeText(getBaseContext(),mes,Toast.LENGTH_LONG);
+                    Toast ts = Toast.makeText(getBaseContext(), mes, Toast.LENGTH_LONG);
                     ts.show();
                 }
                 dialog.cancel();

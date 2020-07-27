@@ -184,7 +184,7 @@ public class ListActivity extends Activity {
         this.inputButton = (Button) findViewById(R.id.inputButton);
         this.submit = (Button) findViewById(R.id.submit);
 
-        SharedPreferences setinfo =  getSharedPreferences("GlobalData",Context.MODE_PRIVATE);
+        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
         whId = intent.getStringExtra("whId");
@@ -358,15 +358,16 @@ public class ListActivity extends Activity {
         MyAdapter myAdapter = new ListActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
     }
-    class MyAdapter extends BaseAdapter
-    {
+
+    class MyAdapter extends BaseAdapter {
         private Context content;
         private ArrayList<MyContent> datas;
-        private MyAdapter(Context context, ArrayList<MyContent> datas)
-        {
+
+        private MyAdapter(Context context, ArrayList<MyContent> datas) {
             this.content = context;
             this.datas = datas;
         }
+
         @Override
         public int getCount() {
             return datas.size();
@@ -385,15 +386,14 @@ public class ListActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            testActivity.ViewHolder viewHolder=null;
-            if (convertView == null)
-            {
+            testActivity.ViewHolder viewHolder = null;
+            if (convertView == null) {
                 convertView = LayoutInflater.from(content).inflate(R.layout.item_slide, null);
                 viewHolder = new testActivity.ViewHolder();
-                viewHolder.contentView= (TextView) convertView.findViewById(R.id.content);
+                viewHolder.contentView = (TextView) convertView.findViewById(R.id.content);
                 viewHolder.menuView = (TextView) convertView.findViewById(R.id.menu);
                 convertView.setTag(viewHolder);
-            }else {
+            } else {
                 viewHolder = (testActivity.ViewHolder) convertView.getTag();
             }
             viewHolder.contentView.setText(datas.get(position).getContent());
@@ -423,8 +423,8 @@ public class ListActivity extends Activity {
         }
 
         public SlideLayout slideLayout = null;
-        class MyOnStateChangeListener implements SlideLayout.OnStateChangeListener
-        {
+
+        class MyOnStateChangeListener implements SlideLayout.OnStateChangeListener {
             /**
              * 滑动后每次手势抬起保证只有一个item是open状态，加入sets集合中
              **/
@@ -442,8 +442,7 @@ public class ListActivity extends Activity {
 
             @Override
             public void onMove(SlideLayout layout) {
-                if (slideLayout != null && slideLayout !=layout)
-                {
+                if (slideLayout != null && slideLayout != layout) {
                     slideLayout.closeMenu();
                 }
             }
@@ -453,14 +452,14 @@ public class ListActivity extends Activity {
                 if (sets.size() > 0) {
                     sets.remove(layout);
                 }
-                if(slideLayout ==layout){
+                if (slideLayout == layout) {
                     slideLayout = null;
                 }
             }
         }
     }
-    static class ViewHolder
-    {
+
+    static class ViewHolder {
         public TextView contentView;
         public TextView menuView;
     }
