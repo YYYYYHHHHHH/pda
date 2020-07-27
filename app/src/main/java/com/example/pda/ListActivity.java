@@ -236,6 +236,7 @@ public class ListActivity extends Activity {
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("检查条码中")
                 .show();
+        barcodeStr = barcodeStr;
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -212,6 +212,7 @@ public class ListTwoActivity extends Activity {
         }
 
     }
+
     @Event(R.id.clear)
     private void initClaer(View view) {
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("确认要清空吗")
@@ -251,6 +252,7 @@ public class ListTwoActivity extends Activity {
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("检查条码中")
                 .show();
+        barcodeStr = barcodeStr;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -353,13 +355,13 @@ public class ListTwoActivity extends Activity {
                     toast.setGravity(Gravity.TOP, 0, 70);
                     toast.show();
                 } else {
-                    if ( !"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
+                    if (!"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
                         alert.setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
                                 .setIcon(android.R.drawable.ic_dialog_info)
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if (strArr.contains(new MyTwoContent( barcodeStr))) {
+                                        if (strArr.contains(new MyTwoContent(barcodeStr))) {
                                             toast.setText("条码已存在！");
                                             toast.setGravity(Gravity.TOP, 0, 70);
                                             toast.show();
@@ -483,6 +485,9 @@ public class ListTwoActivity extends Activity {
                     slideLayout.closeMenu(); //解决删除item后下一个item变成open状态问题
                     datas.remove(myTwoContent);
                     numberText.setText("记数：" + strArr.size() + "件");
+                    if (datas.size() == 1) {
+                        datas.get(0).setGroup(true);
+                    }
                     notifyDataSetChanged();
                 }
             });
