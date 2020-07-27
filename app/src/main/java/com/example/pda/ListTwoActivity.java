@@ -89,7 +89,7 @@ public class ListTwoActivity extends Activity {
     private Toast toast = MyToast.getToast();
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private ArrayList<MyTwoContent> strArr = null;
-    private AlertDialog.Builder alert = new AlertDialog.Builder(ListTwoActivity.this);
+    private AlertDialog.Builder alert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +103,7 @@ public class ListTwoActivity extends Activity {
         csId = intent.getStringExtra("csId");
         csName = intent.getStringExtra("csName");
         isGroup = intent.getBooleanExtra("isGroup", false);
+        alert = new AlertDialog.Builder(ListTwoActivity.this);
         this.listView();
     }
 
@@ -173,7 +174,6 @@ public class ListTwoActivity extends Activity {
             toast.setText("没有要提交的条码");
             toast.setGravity(Gravity.TOP, 0, 70);
             toast.show();
-
             return;
         }
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
@@ -212,7 +212,6 @@ public class ListTwoActivity extends Activity {
         }
 
     }
-
     @Event(R.id.clear)
     private void initClaer(View view) {
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("确认要清空吗")
@@ -360,6 +359,12 @@ public class ListTwoActivity extends Activity {
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        if (strArr.contains(new MyTwoContent( barcodeStr))) {
+                                            toast.setText("条码已存在！");
+                                            toast.setGravity(Gravity.TOP, 0, 70);
+                                            toast.show();
+                                            return;
+                                        }
                                         MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
                                         if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
                                             myTwoContent.setGroup(false);
