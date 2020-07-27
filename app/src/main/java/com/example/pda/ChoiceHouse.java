@@ -19,7 +19,14 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.WhBean;
 import com.example.pda.bean.WhListBean;
+import com.example.pda.bean.globalbean.MyOkHttpClient;
+import com.example.pda.bean.globalbean.MyToast;
 import com.google.gson.Gson;
+
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,61 +36,40 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
+@ContentView(R.layout.activity_choicehouse)
 public class ChoiceHouse extends AppCompatActivity {
-    final OkHttpClient client = new OkHttpClient();
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息",ReturnMessage);
-                final WhListBean whListBean = new Gson().fromJson(ReturnMessage, WhListBean.class);
-                WhList = whListBean.getRows();
-                if (WhList.size() == 1) {
-                    editText.setText(WhList.get(0).getWhName());
-                }
-            } else {
-
-            }
-
-        }
-    };
-    private List<WhBean> WhList = new ArrayList<>();
+    @ViewInject(R.id.house_name)
     private EditText editText;
+    @ViewInject(R.id.clear)
     private Button clearButton;
+    @ViewInject(R.id.next)
     private Button nextButton;
+    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
+    private Toast toast = MyToast.getToast();
+    private List<WhBean> WhList = new ArrayList<>();
     private String whId;
     private UserBean userBean;
     private String menuid;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choicehouse);
+        x.view().inject(this);
         SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-//        Toast ts = Toast.makeText(getBaseContext(),"欢迎回来：" + userBean.getUser(),Toast.LENGTH_LONG);
-//        ts.setGravity(Gravity.TOP,0,70);
-//        ts.show();
         Intent intent = getIntent();
         menuid = intent.getStringExtra("menuid");
         getWhList();
-        editText = (EditText) findViewById(R.id.house_name);
-        clearButton = (Button)findViewById(R.id.clear);
-        nextButton = (Button)findViewById(R.id.next);
-        this.editTextOnClick();
-        this.clearOnClick();
-        this.nextOnClick();
     }
 
-    private void editTextOnClick() {
+    @Event(R.id.house_name)
+    private void editTextOnClick(View view) {
 
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (WhList.size() <= 0) {
-                    Toast ts = Toast.makeText(getBaseContext(), "无数据", Toast.LENGTH_SHORT);
-                    ts.setGravity(Gravity.TOP, 0, 70);
-                    ts.show();
+                    toast.setText("无数据");
+                    toast.show();
                 } else {
                     OptionsPickerView pvOptions = new OptionsPickerView.Builder(ChoiceHouse.this, new OptionsPickerView.OnOptionsSelectListener() {
                         @Override
@@ -108,7 +94,8 @@ public class ChoiceHouse extends AppCompatActivity {
             }
         });
     }
-    private void clearOnClick() {
+    @Event(R.id.clear)
+    private void clearOnClick(View view) {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,23 +103,25 @@ public class ChoiceHouse extends AppCompatActivity {
             }
         });
     }
-    private void nextOnClick() {
+    @Event(R.id.next)
+    private void nextOnClick(View view) {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("editText的值", String.valueOf(editText.getText()));
                 if ("".equals(String.valueOf(editText.getText()))) {
-                    Toast ts = Toast.makeText(getBaseContext(),"请先选择仓库",Toast.LENGTH_LONG);
-                    ts.show();
+                    toast.setText("请先选择仓库");
+                    toast.show();
                 } else {
                     Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
-                    i.putExtra("whId",whId);
+                    i.putExtra("whId", whId);
                     startActivity(i);
                 }
 
             }
         });
     }
+
     private void getWhList() {
         final Request request = new Request.Builder()
                 .url("http://192.168.11.243/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
@@ -158,7 +147,23 @@ public class ChoiceHouse extends AppCompatActivity {
                 }
             }
         }).start();
-
     }
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                final WhListBean whListBean = new Gson().fromJson(ReturnMessage, WhListBean.class);
+                WhList = whListBean.getRows();
+                if (WhList.size() == 1) {
+                    editText.setText(WhList.get(0).getWhName());
+                }
+            } else {
+
+            }
+
+        }
+    };
 }
