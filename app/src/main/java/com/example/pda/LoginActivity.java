@@ -85,7 +85,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         }
     }
 
-    @Event(value = R.id.login)
+    @Event(value = R.id.login, type = View.OnClickListener.class)
     private void onClick(View view) {
         String username = name.getText().toString().trim();
         String password = pass.getText().toString().trim();

@@ -19,9 +19,18 @@ import android.widget.Toast;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.example.pda.bean.CustomerBean;
 import com.example.pda.bean.CustomerListBean;
+import com.example.pda.bean.globalbean.MyOkHttpClient;
+import com.example.pda.bean.globalbean.MyToast;
 import com.google.gson.Gson;
 
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -30,94 +39,49 @@ import okhttp3.Response;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+@ContentView(R.layout.activity_groupuserchoice)
 public class GroupUserChoiceActivity extends Activity {
-    Button search;
-    EditText user_name;
-    Button clear;
-    Button next;
-    CheckBox isGroup;
-    final OkHttpClient client = new OkHttpClient();
+    @ViewInject(R.id.search)
+    private Button search;
+    @ViewInject(R.id.user_name)
+    private EditText user_name;
+    @ViewInject(R.id.clear)
+    private Button clear;
+    @ViewInject(R.id.next)
+    private Button next;
+    @ViewInject(R.id.isGroup)
+    private CheckBox isGroup;
+    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
+    private Toast toast = MyToast.getToast();
     private List<CustomerBean> customerList;
     private String csId = "";
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息", ReturnMessage);
-                CustomerListBean customerListBean = new Gson().fromJson(ReturnMessage, CustomerListBean.class);
-                customerList = customerListBean.getRows();
-                OptionsPickerView pvOptions = new OptionsPickerView.Builder(GroupUserChoiceActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
-                    @Override
-                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                        CustomerBean customerBean = customerList.get(options1);
-                        user_name.setText(customerBean.getColumn1());
-                        csId = customerBean.getCustId();
-                        user_name.setFocusable(false);
-                        user_name.setTextIsSelectable(false);
-                    }
-                })
-
-                        .setDividerColor(Color.BLACK)
-                        .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
-                        .setContentTextSize(20)//设置文字大小
-                        .setOutSideCancelable(false)// default is true
-                        .setTitleText("一共有 " + customerListBean.get客户列表() + "条 数据")
-                        .setCancelText("取消")
-                        .setSubmitText("确定")
-                        .build();
-                if (customerList.size() > 0) {
-                    hintKbTwo();
-                    pvOptions.setPicker(customerList);//条件选择器
-                    pvOptions.show();
-                } else {
-                    Toast ts = Toast.makeText(getBaseContext(), "没有数据！请检查输入的关键字", LENGTH_SHORT);
-                    ts.setGravity(Gravity.TOP, 0, 70);
-                    ts.show();
-                }
-
-
-            }
-        }
-    };
+    private String csName = "";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_groupuserchoice);
-        search = findViewById(R.id.search);
-        user_name = findViewById(R.id.user_name);
-        clear = findViewById(R.id.clear);
-        next = findViewById(R.id.next);
-        isGroup = findViewById(R.id.isGroup);
+        x.view().inject(this);
         this.initUserName();
-        this.initClear();
-        this.initSearch();
-        this.initNext();
     }
-    private void initNext() {
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ("".equals(csId)) {
-                    Toast toast = Toast.makeText(GroupUserChoiceActivity.this, "请先选择客户！", LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 0, 70);
-                    toast.show();
-                    return;
-                }
-                Intent intent = new Intent(GroupUserChoiceActivity.this, ListTwoActivity.class);
-                intent.putExtra("csId", csId);
-                intent.putExtra("isGroup", isGroup.isChecked());
-                startActivity(intent);
-            }
-        });
+
+    @Event(R.id.next)
+    private void initNext(View view) {
+        if ("".equals(csId)) {
+            toast.setText("请先选择客户！");
+            toast.show();
+            return;
+        }
+        Intent intent = new Intent(GroupUserChoiceActivity.this, ListTwoActivity.class);
+        intent.putExtra("csId", csId);
+        intent.putExtra("isGroup", isGroup.isChecked());
+        intent.putExtra("csName", csName);
+        startActivity(intent);
     }
 
     private void getUserList() {
         String nameKey = user_name.getText().toString();
         if (nameKey.length() < 2) {
-            Toast ts = Toast.makeText(getBaseContext(), "请填写两个以上的关键字", LENGTH_SHORT);
-            ts.setGravity(Gravity.TOP, 0, 70);
-            ts.show();
+            toast.setText("请填写两个以上的关键字");
+            toast.show();
             return;
         }
         final Request request = new Request.Builder()
@@ -140,18 +104,23 @@ public class GroupUserChoiceActivity extends Activity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();
     }
 
-    private void initSearch() {
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getUserList();
-            }
-        });
+    @Event(R.id.search)
+    private void initSearch(View view) {
+        getUserList();
     }
 
     private void initUserName() {
@@ -171,19 +140,16 @@ public class GroupUserChoiceActivity extends Activity {
         });
     }
 
-    private void initClear() {
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                user_name.setText("");
-                user_name.setFocusable(true);
-                user_name.setFocusableInTouchMode(true);
-                user_name.requestFocus();
-                user_name.findFocus();
-                user_name.setTextIsSelectable(true);
-                csId = "";
-            }
-        });
+    @Event(R.id.clear)
+    private void initClear(View view) {
+        user_name.setText("");
+        user_name.setFocusable(true);
+        user_name.setFocusableInTouchMode(true);
+        user_name.requestFocus();
+        user_name.findFocus();
+        user_name.setTextIsSelectable(true);
+        csId = "";
+        csName = "";
     }
 
     public void showInput(final EditText et) {
@@ -200,4 +166,46 @@ public class GroupUserChoiceActivity extends Activity {
             }
         }
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                CustomerListBean customerListBean = new Gson().fromJson(ReturnMessage, CustomerListBean.class);
+                customerList = customerListBean.getRows();
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(GroupUserChoiceActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        CustomerBean customerBean = customerList.get(options1);
+                        user_name.setText(customerBean.getColumn1());
+                        csId = customerBean.getCustId();
+                        csName = customerBean.getColumn1();
+                        user_name.setFocusable(false);
+                        user_name.setTextIsSelectable(false);
+                    }
+                })
+
+                        .setDividerColor(Color.BLACK)
+                        .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
+                        .setContentTextSize(20)//设置文字大小
+                        .setOutSideCancelable(false)// default is true
+                        .setTitleText("一共有 " + customerListBean.get客户列表() + "条 数据")
+                        .setCancelText("取消")
+                        .setSubmitText("确定")
+                        .build();
+                if (customerList.size() > 0) {
+                    hintKbTwo();
+                    pvOptions.setPicker(customerList);//条件选择器
+                    pvOptions.show();
+                } else {
+                    toast.setText("没有数据！请检查输入的关键字");
+                    toast.show();
+                }
+
+
+            }
+        }
+    };
 }

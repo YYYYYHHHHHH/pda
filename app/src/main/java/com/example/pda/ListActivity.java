@@ -44,6 +44,8 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -157,92 +159,72 @@ public class ListActivity extends Activity {
 
     @Event(R.id.submit)
     private void initSubmit(View view) {
-        this.submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (strArr.size() <= 0) {
-                    toast.setText("没有要提交的条码");
-                    toast.show();
-                    return;
-                }
-                new AlertDialog.Builder(ListActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                submitBarCode();
-                            }
-                        })
-                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 点击“返回”后的操作,这里不设置没有任何操作
-                            }
-                        }).show();
-            }
-        });
+        if (strArr.size() <= 0) {
+            toast.setText("没有要提交的条码");
+            toast.show();
+            return;
+        }
+        new AlertDialog.Builder(ListActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        submitBarCode();
+                    }
+                })
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作
+                    }
+                }).show();
     }
 
     @Event(R.id.inputButton)
     private void initInputButton(View view) {
-        this.inputButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String code = inputCode.getText().toString();
-                if ("".equals(code)) {
-                    toast.setText("不能添加空条码");
-                    toast.show();
-                } else {
-                    if (strArr.contains(new MyContent(code))) {
-                        toast.setText("不能重复扫码");
-                        toast.show();
-                        return;
-                    }
-                    checkBarCode(code);
-                }
+        final String code = inputCode.getText().toString();
+        if ("".equals(code)) {
+            toast.setText("不能添加空条码");
+            toast.show();
+        } else {
+            if (strArr.contains(new MyContent(code))) {
+                toast.setText("不能重复扫码");
+                toast.show();
+                return;
             }
-        });
-
+            checkBarCode(code);
+        }
     }
 
     @Event(R.id.clear)
     private void initClaer(View view) {
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(ListActivity.this).setTitle("确认要清空吗")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                strArr = new ArrayList<>();
-                                MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
-                                listView.setAdapter(myAdapter);
-                                numberText.setText("记数：" + strArr.size() + "件");
-                                inputCode.setText("");
-                            }
-                        })
-                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 点击“返回”后的操作,这里不设置没有任何操作
-                            }
-                        }).show();
-            }
-        });
+        new AlertDialog.Builder(ListActivity.this).setTitle("确认要清空吗")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        strArr = new ArrayList<>();
+                        MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
+                        listView.setAdapter(myAdapter);
+                        numberText.setText("记数：" + strArr.size() + "件");
+                        inputCode.setText("");
+                    }
+                })
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作
+                    }
+                }).show();
     }
 
     @Event(R.id.inputCode)
     private void inputCode(View view) {
-        inputCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputCode.setFocusable(true);
-                inputCode.setFocusableInTouchMode(true);
-                inputCode.requestFocus();
-            }
-        });
+        inputCode.setFocusable(true);
+        inputCode.setFocusableInTouchMode(true);
+        inputCode.requestFocus();
     }
+
 
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
@@ -271,6 +253,15 @@ public class ListActivity extends Activity {
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();
@@ -307,6 +298,15 @@ public class ListActivity extends Activity {
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();

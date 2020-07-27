@@ -29,6 +29,8 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,67 +63,52 @@ public class ChoiceHouse extends AppCompatActivity {
         getWhList();
     }
 
-    @Event(R.id.house_name)
+    @Event(value = R.id.house_name, type = View.OnClickListener.class)
     private void editTextOnClick(View view) {
-
-        editText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (WhList.size() <= 0) {
-                    toast.setText("无数据");
-                    toast.show();
-                } else {
-                    OptionsPickerView pvOptions = new OptionsPickerView.Builder(ChoiceHouse.this, new OptionsPickerView.OnOptionsSelectListener() {
-                        @Override
-                        public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                            WhBean wh = WhList.get(options1);
-                            editText.setText(wh.getWhName());
-                            whId = wh.getWhId();
-                        }
-                    })
-
-                            .setDividerColor(Color.BLACK)
-                            .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
-                            .setContentTextSize(20)//设置文字大小
-                            .setOutSideCancelable(false)// default is true
-                            .setTitleText("选择仓库")
-                            .setCancelText("取消")
-                            .setSubmitText("确定")
-                            .build();
-                    pvOptions.setPicker(WhList);//条件选择器
-                    pvOptions.show();
+        if (WhList.size() <= 0) {
+            toast.setText("无数据");
+            toast.show();
+        } else {
+            OptionsPickerView pvOptions = new OptionsPickerView.Builder(ChoiceHouse.this, new OptionsPickerView.OnOptionsSelectListener() {
+                @Override
+                public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                    WhBean wh = WhList.get(options1);
+                    editText.setText(wh.getWhName());
+                    whId = wh.getWhId();
                 }
-            }
-        });
+            })
+
+                    .setDividerColor(Color.BLACK)
+                    .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
+                    .setContentTextSize(20)//设置文字大小
+                    .setOutSideCancelable(false)// default is true
+                    .setTitleText("选择仓库")
+                    .setCancelText("取消")
+                    .setSubmitText("确定")
+                    .build();
+            pvOptions.setPicker(WhList);//条件选择器
+            pvOptions.show();
+        }
     }
-    @Event(R.id.clear)
+
+    @Event(value = R.id.clear, type = View.OnClickListener.class)
     private void clearOnClick(View view) {
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editText.setText("");
-            }
-        });
+        editText.setText("");
     }
-    @Event(R.id.next)
+
+    @Event(value = R.id.next, type = View.OnClickListener.class)
     private void nextOnClick(View view) {
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("editText的值", String.valueOf(editText.getText()));
-                if ("".equals(String.valueOf(editText.getText()))) {
-                    toast.setText("请先选择仓库");
-                    toast.show();
-                } else {
-                    Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
-                    i.putExtra("whId", whId);
-                    startActivity(i);
-                }
+        Log.i("editText的值", String.valueOf(editText.getText()));
+        if ("".equals(String.valueOf(editText.getText()))) {
+            toast.setText("请先选择仓库");
+            toast.show();
+        } else {
+            Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
+            i.putExtra("whId", whId);
+            startActivity(i);
+        }
 
-            }
-        });
     }
-
     private void getWhList() {
         final Request request = new Request.Builder()
                 .url("http://192.168.11.243/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
@@ -144,6 +131,15 @@ public class ChoiceHouse extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();

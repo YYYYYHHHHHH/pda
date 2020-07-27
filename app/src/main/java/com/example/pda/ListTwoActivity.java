@@ -32,14 +32,24 @@ import android.widget.Toast;
 
 import com.example.pda.bean.BarCodeBean;
 import com.example.pda.bean.BarCodeTwoBean;
+import com.example.pda.bean.BatCodeThreeBean;
 import com.example.pda.bean.UserBean;
+import com.example.pda.bean.globalbean.MyOkHttpClient;
+import com.example.pda.bean.globalbean.MyToast;
 import com.example.pda.commpont.MyTwoContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,7 +60,20 @@ import okhttp3.Response;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+@ContentView(R.layout.activity_list)
 public class ListTwoActivity extends Activity {
+    @ViewInject(R.id.numberText)
+    private TextView numberText;
+    @ViewInject(R.id.inputCode)
+    private EditText inputCode;
+    @ViewInject(R.id.codeitem)
+    private ListView listView;
+    @ViewInject(R.id.inputButton)
+    private Button inputButton;
+    @ViewInject(R.id.clear)
+    private Button clear;
+    @ViewInject(R.id.submit)
+    private Button submit;
     private final static String SCAN_ACTION = ScanManager.ACTION_DECODE;//default action
     private boolean isScaning = false;
     private SoundPool soundpool = null;
@@ -59,10 +82,28 @@ public class ListTwoActivity extends Activity {
     private ZLoadingDialog dialog;
     private UserBean userBean;
     private String csId;
+    private String csName;
     private Boolean isGroup;
     private Set<SlideLayout> sets = new HashSet();
     private int soundid;
-    private Toast toast;
+    private Toast toast = MyToast.getToast();
+    private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
+    private ArrayList<MyTwoContent> strArr = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        x.view().inject(this);
+        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
+        Intent intent = getIntent();
+        csId = intent.getStringExtra("csId");
+        csName = intent.getStringExtra("csName");
+        isGroup = intent.getBooleanExtra("isGroup", false);
+        this.listView();
+    }
 
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
         @Override
@@ -83,55 +124,6 @@ public class ListTwoActivity extends Activity {
                 return;
             }
             checkBarCode(barcodeStr);
-        }
-    };
-    final OkHttpClient client = new OkHttpClient();
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            dialog.cancel();
-            if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息", ReturnMessage);
-                BarCodeTwoBean barCodeTwoBean = new Gson().fromJson(ReturnMessage, BarCodeTwoBean.class);
-                int status = Integer.parseInt(barCodeTwoBean.getStatus());
-                String mesg = barCodeTwoBean.getMsg();
-                if (status < 0) {
-                    if (status == -100) {
-                        mesg += "，或者扫描不清晰";
-                    }
-                    toast.setText(mesg);
-                    toast.setGravity(Gravity.TOP, 0, 70);
-                    toast.show();
-                } else {
-                    MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
-                    if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
-                        myTwoContent.setGroup(false);
-                    }
-                    strArr.add(myTwoContent);
-                    MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
-                    listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
-                }
-            } else if (msg.what == 2) {
-                String ReturnMessage = (String) msg.obj;
-                Log.i("获取的返回信息", ReturnMessage);
-                BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
-                int status = Integer.parseInt(barCodeBean.getStatus());
-                String mesg = barCodeBean.getMsg();
-
-                toast.setText(mesg);
-                toast.setGravity(Gravity.TOP, 0, 70);
-                toast.show();
-                if (status != 0) {
-
-                } else {
-                    strArr.clear();
-                    MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
-                    listView.setAdapter(myAdapter);
-                    numberText.setText("记数：" + strArr.size() + "件");
-                }
-            }
         }
     };
 
@@ -174,130 +166,79 @@ public class ListTwoActivity extends Activity {
         unregisterReceiver(mScanReceiver);
     }
 
-    private TextView numberText = null;
-    private EditText inputCode = null;
-    private ListView listView = null;
-    private ArrayList<MyTwoContent> strArr = null;
-    private Button inputButton = null;
-    private Button clear = null;
-    private Button submit = null;
+    @Event(R.id.submit)
+    private void initSubmit(View view) {
+        if (strArr.size() <= 0) {
+            toast.setText("没有要提交的条码");
+            toast.setGravity(Gravity.TOP, 0, 70);
+            toast.show();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        this.inputCode = (EditText) findViewById(R.id.inputCode);
-        this.listView = (ListView) findViewById(R.id.codeitem);
-        this.numberText = (TextView) findViewById(R.id.numberText);
-        this.clear = (Button) findViewById(R.id.clear);
-        this.inputButton = (Button) findViewById(R.id.inputButton);
-        this.submit = (Button) findViewById(R.id.submit);
+            return;
+        }
+        new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
-        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-        Intent intent = getIntent();
-        csId = intent.getStringExtra("csId");
-        isGroup = intent.getBooleanExtra("isGroup", false);
-        toast = Toast.makeText(getBaseContext(), "", LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0 ,70);
-        this.inputCode();
-        this.listView();
-        this.initClaer();
-        this.initInputButton();
-        this.initSubmit();
-    }
-
-    private void initSubmit() {
-        this.submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (strArr.size() <= 0) {
-                    toast.setText("没有要提交的条码");
-                    toast.setGravity(Gravity.TOP, 0, 70);
-                    toast.show();
-
-                    return;
-                }
-                new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                submitBarCode();
-                            }
-                        })
-                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 点击“返回”后的操作,这里不设置没有任何操作
-                            }
-                        }).show();
-            }
-        });
-    }
-
-    private void initInputButton() {
-        this.inputButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String code = inputCode.getText().toString();
-                if ("".equals(code)) {
-                    toast.setText("不能添加空条码");
-                    toast.setGravity(Gravity.TOP, 0, 70);
-                    toast.show();
-
-                } else {
-                    if (strArr.contains(new MyTwoContent(code))) {
-                        toast.setText("不能重复扫码！");
-                        toast.setGravity(Gravity.TOP, 0, 70);
-                        toast.show();
-                        return;
+                        submitBarCode();
                     }
-                    checkBarCode(code);
-                }
+                })
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作
+                    }
+                }).show();
+    }
+
+    @Event(R.id.inputButton)
+    private void initInputButton(View view) {
+        final String code = inputCode.getText().toString();
+        if ("".equals(code)) {
+            toast.setText("不能添加空条码");
+            toast.setGravity(Gravity.TOP, 0, 70);
+            toast.show();
+
+        } else {
+            if (strArr.contains(new MyTwoContent(code))) {
+                toast.setText("不能重复扫码！");
+                toast.setGravity(Gravity.TOP, 0, 70);
+                toast.show();
+                return;
             }
-        });
+            checkBarCode(code);
+        }
 
     }
 
-    private void initClaer() {
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(ListTwoActivity.this).setTitle("确认要清空吗")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                strArr = new ArrayList<>();
-                                MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
-                                listView.setAdapter(myAdapter);
-                                numberText.setText("记数：" + strArr.size() + "件");
-                                inputCode.setText("");
-                            }
-                        })
-                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 点击“返回”后的操作,这里不设置没有任何操作
-                            }
-                        }).show();
-            }
-        });
+    @Event(R.id.clear)
+    private void initClaer(View view) {
+        new AlertDialog.Builder(ListTwoActivity.this).setTitle("确认要清空吗")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        strArr = new ArrayList<>();
+                        MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
+                        listView.setAdapter(myAdapter);
+                        numberText.setText("记数：" + strArr.size() + "件");
+                        inputCode.setText("");
+                    }
+                })
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 点击“返回”后的操作,这里不设置没有任何操作
+                    }
+                }).show();
     }
 
-    private void inputCode() {
-        inputCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputCode.setFocusable(true);
-                inputCode.setFocusableInTouchMode(true);
-                inputCode.requestFocus();
-            }
-        });
+    @Event(R.id.inputCode)
+    private void inputCode(View view) {
+        inputCode.setFocusable(true);
+        inputCode.setFocusableInTouchMode(true);
+        inputCode.requestFocus();
     }
 
     private void checkBarCode(String barcodeStr) {
@@ -327,6 +268,15 @@ public class ListTwoActivity extends Activity {
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();
@@ -363,6 +313,15 @@ public class ListTwoActivity extends Activity {
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        toast.setText("请求超时！");
+                        toast.show();
+                    }
+                    if (e instanceof ConnectException) {
+                        toast.setText("和服务器连接异常！");
+                        toast.show();
+
+                    }
                 }
             }
         }).start();
@@ -375,6 +334,92 @@ public class ListTwoActivity extends Activity {
         MyAdapter myAdapter = new ListTwoActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            dialog.cancel();
+            if (msg.what == 1) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                final BarCodeTwoBean barCodeTwoBean = new Gson().fromJson(ReturnMessage, BarCodeTwoBean.class);
+                int status = Integer.parseInt(barCodeTwoBean.getStatus());
+                String mesg = barCodeTwoBean.getMsg();
+                if (status < 0) {
+                    if (status == -100) {
+                        mesg += "，或者扫描不清晰";
+                    }
+                    toast.setText(mesg);
+                    toast.setGravity(Gravity.TOP, 0, 70);
+                    toast.show();
+                } else {
+                    if ( !"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(ListTwoActivity.this).setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
+                                .setIcon(android.R.drawable.ic_dialog_info)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
+                                        if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
+                                            myTwoContent.setGroup(false);
+                                        }
+                                        strArr.add(myTwoContent);
+                                        MyAdapter myAdapter = new MyAdapter(ListTwoActivity.this, strArr);
+                                        listView.setAdapter(myAdapter);
+                                        numberText.setText("记数：" + strArr.size() + "件");
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        return;
+                                    }
+                                });
+                        alert.show();
+
+                    } else {
+                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
+                        if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
+                            myTwoContent.setGroup(false);
+                        }
+                        strArr.add(myTwoContent);
+                        MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
+                        listView.setAdapter(myAdapter);
+                        numberText.setText("记数：" + strArr.size() + "件");
+                    }
+                }
+            } else if (msg.what == 2) {
+                String ReturnMessage = (String) msg.obj;
+                Log.i("获取的返回信息", ReturnMessage);
+                BatCodeThreeBean barCodeBean = new Gson().fromJson(ReturnMessage, BatCodeThreeBean.class);
+                int status = Integer.parseInt(barCodeBean.getStatus());
+                String mesg = barCodeBean.getMsg();
+                if (status != 0) {
+                    toast.setText(mesg);
+                    toast.show();
+                } else {
+                    strArr.clear();
+                    MyAdapter myAdapter = new ListTwoActivity.MyAdapter(ListTwoActivity.this, strArr);
+                    listView.setAdapter(myAdapter);
+                    numberText.setText("记数：" + strArr.size() + "件");
+                    new AlertDialog.Builder(ListTwoActivity.this).setMessage("组托单号为：【" + mesg + "】")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
+
+                }
+            }
+        }
+    };
 
     class MyAdapter extends BaseAdapter {
         private Context content;
