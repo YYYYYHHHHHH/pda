@@ -195,7 +195,15 @@ public class GroupUserChoiceActivity extends Activity {
                         .setCancelText("取消")
                         .setSubmitText("确定")
                         .build();
-                if (customerList.size() > 0) {
+                if (customerList.size() == 1) {
+                    hintKbTwo();
+                    CustomerBean customerBean = customerList.get(0);
+                    user_name.setText(customerBean.getColumn1());
+                    csId = customerBean.getCustId();
+                    csName = customerBean.getColumn1();
+                    user_name.setFocusable(false);
+                    user_name.setTextIsSelectable(false);
+                } else if (customerList.size() > 0) {
                     hintKbTwo();
                     pvOptions.setPicker(customerList);//条件选择器
                     pvOptions.show();

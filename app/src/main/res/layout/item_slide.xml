@@ -4,17 +4,17 @@
     <TextView
         android:id="@+id/content"
         android:layout_width="380dp"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:text="content"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:background="#d7d7d7"
         android:gravity="center"/>
     <TextView
         android:id="@+id/menu"
         android:layout_width="80dp"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:text="删除"
-        android:textSize="15sp"
+        android:textSize="18dp"
         android:background="#ff0000"
         android:gravity="center"
         android:padding="8dp"/>
