@@ -14,7 +14,7 @@ public class MyToast {
         if (toast == null) {
             synchronized(object) {
                 if (toast == null) {
-                    toast = Toast.makeText(LoginActivity.context, "", Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(LoginActivity.context, "", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 0, 70);
                 }
             }
