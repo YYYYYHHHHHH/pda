@@ -2,14 +2,18 @@ package com.example.pda;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,14 +23,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.example.pda.bean.LoginBean;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.util.LongClickUtils;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
+import org.reactivestreams.Subscription;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -35,16 +42,20 @@ import org.xutils.x;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-
 @ContentView(R.layout.activity_loginactivity)
 public class LoginActivity extends Activity implements View.OnLayoutChangeListener {
     //用xUtils进行控件绑定
@@ -68,6 +79,12 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private int keyHeight = 0; //软件盘弹起后所占高度
     public static Context context;
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
+    private SharedPreferences setinfo;
+    private List<String> ipList = Arrays.asList("192.168.11.243", "192.168.11.244");
+    private String currentIp;
+//    private int xx, y, mDownX, mDownY;
+//    private Subscription subscription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +93,16 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
         this.context = getBaseContext();
         toast = MyToast.getToast();
-        SharedPreferences setinfo = getPreferences(Activity.MODE_PRIVATE);
+        setinfo = getPreferences(Activity.MODE_PRIVATE);
         String isSave = setinfo.getString("isSave", "0");
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        currentIp = setinfo.getString("Ip", "192.168.11.243");
         if ("1".equals(isSave)) {
             this.isSave.setChecked(true);
             name.setText(setinfo.getString("name", ""));
             pass.setText(setinfo.getString("pass", ""));
         }
+        onLongClick();
     }
 
     @Event(value = R.id.login, type = View.OnClickListener.class)
@@ -92,6 +112,35 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         postRequest(username, password);
     }
 
+    private void onLongClick() {
+        LongClickUtils.setLongClick(new Handler(), iv_login_logo, 5000, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(LoginActivity.this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        final String s = ipList.get(options1);
+                        currentIp = s;
+                        setinfo.edit().putString("Ip", currentIp).commit();
+                        toast.setText("当前IP为：" + currentIp);
+                        toast.show();
+                    }
+                })
+                        .setDividerColor(Color.BLACK)
+                        .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
+                        .setContentTextSize(20)//设置文字大小
+                        .setOutSideCancelable(false)// default is true
+                        .setTitleText("选择IP地址")
+                        .setCancelText("取消")
+                        .setSubmitText("确定")
+                        .build();
+                pvOptions.setPicker(ipList);//条件选择器
+                pvOptions.setSelectOptions(ipList.indexOf(currentIp));
+                pvOptions.show();
+                return true;
+            }
+        });
+    }
     @Override
     protected void onResume() {
         super.onResume();

@@ -33,6 +33,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.zyao89:zloading:1.0.11'
     implementation 'org.xutils:xutils:3.8.9'
+    // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.9'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
+
 
 //    implementation project(':SDKLibrary')
 }
