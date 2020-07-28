@@ -90,6 +90,7 @@ public class ListTwoActivity extends Activity {
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private ArrayList<MyTwoContent> strArr = null;
     private AlertDialog.Builder alert;
+    private String numberOfGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +104,19 @@ public class ListTwoActivity extends Activity {
         csId = intent.getStringExtra("csId");
         csName = intent.getStringExtra("csName");
         isGroup = intent.getBooleanExtra("isGroup", false);
+        numberOfGroups = intent.getStringExtra("numberOfGroups");
         alert = new AlertDialog.Builder(ListTwoActivity.this);
         this.listView();
+    }
+
+    private Boolean checkNumberOfGroups() {
+        if ("空".equals(numberOfGroups) || strArr.size() < Integer.parseInt(numberOfGroups)) {
+            return true;
+        } else {
+            toast.setText("条码的数量不能多于选定组托数量");
+            toast.show();
+            return false;
+        }
     }
 
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
@@ -175,6 +187,10 @@ public class ListTwoActivity extends Activity {
             toast.setGravity(Gravity.TOP, 0, 70);
             toast.show();
             return;
+        } else if (!"空".equals(numberOfGroups) && strArr.size() != Integer.parseInt(numberOfGroups)) {
+            toast.setText("扫描数量和组托数量不一");
+            toast.show();
+            return;
         }
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
@@ -208,7 +224,9 @@ public class ListTwoActivity extends Activity {
                 toast.show();
                 return;
             }
-            checkBarCode(code);
+            if (checkNumberOfGroups()) {
+                checkBarCode(code);
+            }
         }
 
     }
@@ -355,6 +373,7 @@ public class ListTwoActivity extends Activity {
                     toast.setGravity(Gravity.TOP, 0, 70);
                     toast.show();
                 } else {
+                    if (!checkNumberOfGroups()) return;
                     if (!"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
                         alert.setMessage("现在在为【" + csName + "】组托, 该批卷是为【" + barCodeTwoBean.getCustName() + "】生成的, 您确认组托吗")
                                 .setIcon(android.R.drawable.ic_dialog_info)

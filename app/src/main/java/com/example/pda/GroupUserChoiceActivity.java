@@ -67,11 +67,13 @@ public class GroupUserChoiceActivity extends Activity {
     private String csId = "";
     private String csName = "";
     private List<String> numList;
+    private String numberOfGroups = "12";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         x.view().inject(this);
         numList = new ArrayList<>();
+        numList.add("空");
         for (int i = 1; i < 36; i++) {
             String item = "";
             item += i;
@@ -79,7 +81,6 @@ public class GroupUserChoiceActivity extends Activity {
                 item = "0" + item;
             numList.add(item);
         }
-
         this.initUserName();
     }
 
@@ -94,6 +95,7 @@ public class GroupUserChoiceActivity extends Activity {
         intent.putExtra("csId", csId);
         intent.putExtra("isGroup", isGroup.isChecked());
         intent.putExtra("csName", csName);
+        intent.putExtra("numberOfGroups", numberOfGroups);
         startActivity(intent);
     }
 
@@ -104,12 +106,13 @@ public class GroupUserChoiceActivity extends Activity {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
                 final String s = numList.get(options1);
-                if (!s.equals("12")) {
+                if (!s.equals(numberOfGroups)) {
                     new AlertDialog.Builder(GroupUserChoiceActivity.this).setTitle("确认要更改组托单数量吗")
                             .setIcon(android.R.drawable.ic_dialog_info)
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    numberOfGroups = s;
                                     groupnum.setText("组托数量为：" + s + "件");
                                 }
                             })
@@ -131,17 +134,17 @@ public class GroupUserChoiceActivity extends Activity {
                 .setSubmitText("确定")
                 .build();
         pvOptions.setPicker(numList);//条件选择器
-        pvOptions.setSelectOptions(numList.indexOf("12"));
+        pvOptions.setSelectOptions(numList.indexOf(numberOfGroups));
         pvOptions.show();
     }
 
     private void getUserList() {
         String nameKey = user_name.getText().toString();
-        if (nameKey.length() < 2) {
-            toast.setText("请填写两个以上的关键字");
-            toast.show();
-            return;
-        }
+//        if (nameKey.length() < 2) {
+//            toast.setText("请填写两个以上的关键字");
+//            toast.show();
+//            return;
+//        }
         final Request request = new Request.Builder()
                 .url("http://192.168.11.243/FirstPDAServer/home/GetCustList?partName=" + nameKey)
                 .get()
@@ -180,7 +183,6 @@ public class GroupUserChoiceActivity extends Activity {
     private void initSearch(View view) {
         getUserList();
     }
-
     private void initUserName() {
         user_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

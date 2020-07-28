@@ -22,7 +22,7 @@
         android:layout_height="45dp"
         android:layout_marginLeft="10dp"
         android:ems="10"
-        android:hint="请填写两个以上的关键字"
+        android:hint="请输入关键字"
         android:inputType="textPersonName"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/house"

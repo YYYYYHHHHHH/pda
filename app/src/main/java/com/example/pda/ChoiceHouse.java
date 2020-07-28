@@ -109,6 +109,7 @@ public class ChoiceHouse extends AppCompatActivity {
         }
 
     }
+
     private void getWhList() {
         final Request request = new Request.Builder()
                 .url("http://192.168.11.243/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
