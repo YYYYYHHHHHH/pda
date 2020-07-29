@@ -82,8 +82,6 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private SharedPreferences setinfo;
     private List<String> ipList = Arrays.asList("192.168.11.243", "192.168.11.244");
     private String currentIp;
-//    private int xx, y, mDownX, mDownY;
-//    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,14 +91,14 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
         this.context = getBaseContext();
         toast = MyToast.getToast();
-        setinfo = getPreferences(Activity.MODE_PRIVATE);
-        String isSave = setinfo.getString("isSave", "0");
+        SharedPreferences setinfo2 = getPreferences(Activity.MODE_PRIVATE);
+        String isSave = setinfo2.getString("isSave", "0");
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         currentIp = setinfo.getString("Ip", "192.168.11.243");
         if ("1".equals(isSave)) {
             this.isSave.setChecked(true);
-            name.setText(setinfo.getString("name", ""));
-            pass.setText(setinfo.getString("pass", ""));
+            name.setText(setinfo2.getString("name", ""));
+            pass.setText(setinfo2.getString("pass", ""));
         }
         onLongClick();
     }
@@ -122,7 +120,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                         final String s = ipList.get(options1);
                         currentIp = s;
                         setinfo.edit().putString("Ip", currentIp).commit();
-                        toast.setText("当前IP为：" + currentIp);
+                        toast.setText("当前服务器IP为：" + currentIp);
                         toast.show();
                     }
                 })
@@ -130,7 +128,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                         .setTextColorCenter(Color.BLACK) //设置选中项文字颜色
                         .setContentTextSize(20)//设置文字大小
                         .setOutSideCancelable(false)// default is true
-                        .setTitleText("选择IP地址")
+                        .setTitleText("选择服务器IP地址")
                         .setCancelText("取消")
                         .setSubmitText("确定")
                         .build();
@@ -176,7 +174,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         RequestBody formBody = FormBody.create(MediaType.parse("application/json"), new Gson().toJson(new LoginBean(username, password)));
         //发起请求
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/UserLogin?username=" + username + "&" + "password=" + password)
+                .url("http://" + currentIp + "/FirstPDAServer/home/UserLogin?username=" + username + "&" + "password=" + password)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(LoginActivity.this);

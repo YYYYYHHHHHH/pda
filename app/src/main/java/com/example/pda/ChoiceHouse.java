@@ -52,11 +52,12 @@ public class ChoiceHouse extends AppCompatActivity {
     private String whId;
     private UserBean userBean;
     private String menuid;
+    private SharedPreferences setinfo;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         x.view().inject(this);
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
         menuid = intent.getStringExtra("menuid");
@@ -112,7 +113,7 @@ public class ChoiceHouse extends AppCompatActivity {
 
     private void getWhList() {
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
                 .get()
                 .build();
         //新建一个线程，用于得到服务器响应的参数

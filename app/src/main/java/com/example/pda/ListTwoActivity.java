@@ -91,6 +91,7 @@ public class ListTwoActivity extends Activity {
     private ArrayList<MyTwoContent> strArr = null;
     private AlertDialog.Builder alert;
     private String numberOfGroups;
+    private SharedPreferences setinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class ListTwoActivity extends Activity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         x.view().inject(this);
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
         csId = intent.getStringExtra("csId");
@@ -262,7 +263,7 @@ public class ListTwoActivity extends Activity {
 
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/GetBarStatusAndInvClass?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetBarStatusAndInvClass?barcode=" + barcodeStr)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(ListTwoActivity.this);
@@ -303,7 +304,7 @@ public class ListTwoActivity extends Activity {
     }
 
     private void submitBarCode() {
-        String url = "http://192.168.11.243/FirstPDAServer/home/CommitBarToPackage?loginId=" + userBean.getStatus() + "&CustId=" + csId;
+        String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToPackage?loginId=" + userBean.getStatus() + "&CustId=" + csId;
         for (MyTwoContent myTwoContent : strArr) {
             url += "&barcodes=" + myTwoContent.getContent();
         }

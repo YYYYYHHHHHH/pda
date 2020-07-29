@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +69,7 @@ public class GroupUserChoiceActivity extends Activity {
     private String csName = "";
     private List<String> numList;
     private String numberOfGroups = "12";
+    private SharedPreferences setinfo;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,7 @@ public class GroupUserChoiceActivity extends Activity {
                 item = "0" + item;
             numList.add(item);
         }
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         this.initUserName();
     }
 
@@ -146,7 +149,7 @@ public class GroupUserChoiceActivity extends Activity {
 //            return;
 //        }
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/GetCustList?partName=" + nameKey)
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetCustList?partName=" + nameKey)
                 .get()
                 .build();
         new Thread(new Runnable() {

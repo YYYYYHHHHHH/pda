@@ -81,6 +81,7 @@ public class ListActivity extends Activity {
     private int soundid;
     private final OkHttpClient client = new OkHttpClient();
     private ArrayList<MyContent> strArr = null;
+    private SharedPreferences setinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,7 @@ public class ListActivity extends Activity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         x.view().inject(this);
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
         whId = intent.getStringExtra("whId");
@@ -228,7 +229,7 @@ public class ListActivity extends Activity {
 
     private void checkBarCode(String barcodeStr) {
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/GetBarStatus?barcode=" + barcodeStr)
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetBarStatus?barcode=" + barcodeStr)
                 .get()
                 .build();
         dialog = new ZLoadingDialog(ListActivity.this);
@@ -269,7 +270,7 @@ public class ListActivity extends Activity {
     }
 
     private void submitBarCode() {
-        String url = "http://192.168.11.243/FirstPDAServer/home/CommitBarToStock?loginId=" + userBean.getStatus() + "&whId=" + whId;
+        String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToStock?loginId=" + userBean.getStatus() + "&whId=" + whId;
         for (MyContent myContent : strArr) {
             url += "&barcodes=" + myContent.getContent();
         }

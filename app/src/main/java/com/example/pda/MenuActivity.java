@@ -58,12 +58,13 @@ public class MenuActivity extends Activity {
     private ArrayList<HashMap<String, Object>> arrayList;
     private UserBean userBean;
     private Toast toast = MyToast.getToast();
+    private SharedPreferences setinfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         x.view().inject(this);
-        SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         toast.setText("欢迎回来：" + userBean.getUser());
         toast.show();
@@ -82,7 +83,7 @@ public class MenuActivity extends Activity {
 
     private void getMenus() {
         final Request request = new Request.Builder()
-                .url("http://192.168.11.243/FirstPDAServer/home/GetMenuList?loginId=" + userBean.getStatus())
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetMenuList?loginId=" + userBean.getStatus())
                 .get()
                 .build();
         dialog = new ZLoadingDialog(MenuActivity.this);
