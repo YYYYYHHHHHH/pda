@@ -7,14 +7,15 @@ import androidx.lifecycle.ViewModel;
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
+    private static String text;
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("欢迎回来！销售员一");
+        mText.setValue(text);
     }
 
-    public  void setText(String s) {
-        mText.setValue(s);
+    public static void setText(String s) {
+        text = s;
     }
 
     public LiveData<String> getText() {

@@ -224,7 +224,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 final int status = Integer.parseInt(userBean.getStatus());
                 final String mes = userBean.getMsg();
                 if (status > 0) {
-                    Intent i = new Intent(LoginActivity.this, MenuActivity.class);
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     SharedPreferences setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
                     setinfo.edit().putString("user", new Gson().toJson(userBean)).commit();
                     SharedPreferences setinfo2 = getPreferences(Activity.MODE_PRIVATE);

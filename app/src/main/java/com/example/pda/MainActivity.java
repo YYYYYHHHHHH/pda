@@ -1,12 +1,18 @@
 package com.example.pda;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.Toast;
 
+import com.example.pda.bean.UserBean;
+import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,14 +26,23 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private Toast toast;
+    private Toast toast = MyToast.getToast();
     private NavigationView navigationView;
-
+    private UserBean userBean;
+    private SharedPreferences setinfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toast = Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT);
+        this.dataInit();
+        this.initNavigationView();
+        this.initMenu();
+    }
+    private void dataInit() {
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        String user = setinfo.getString("user", "");
+        userBean = new Gson().fromJson(user, UserBean.class);
+        HomeViewModel.setText("欢迎回来！" + userBean.getUser());
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -42,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        this.initNavigationView();
-        this.initMenu();
     }
     private void initNavigationView() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -63,15 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_settings: {
-//                Intent intent = new Intent(this, SettingsActivity.class);
-//                startActivity(intent);
-//                break;
-//            }
-//            default:
-//                break;
-//        }
+
 
         return super.onOptionsItemSelected(item);
     }
