@@ -17,12 +17,16 @@
     <string name="成品入库">成品待入库</string>
     <string name="外购入库">外购入库</string>
     <string name="其他入库">其他入库</string>
-    <string name="销售出库">销售出库</string>
+    <string name="销售出库">拣货出库</string>
     <string name="材料出库">材料出库</string>
     <string name="其他出库">其他出库</string>
-    <string name="拆托出库">拆托出库</string>
+    <string name="拆托出库">领用出库</string>
     <string name="返工出库">返工(半成品)出库</string>
     <string name="出库">出库</string>
     <string name="库存">库存</string>
     <string name="库存盘点">库存盘点</string>
+    <string name="生产">生产</string>
+    <string name="组托单">组托单</string>
+    <string name="装箱单">装箱单</string>
+
 </resources>

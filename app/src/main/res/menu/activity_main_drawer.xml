@@ -27,10 +27,19 @@
                 android:id="@+id/返工出库"/>
             <item android:title="@string/拆托出库"
                 android:id="@+id/拆托出库"/>
-            <item android:title="@string/材料出库"
-                android:id="@+id/材料出库"/>
             <item android:title="@string/其他出库"
                 android:id="@+id/其他出库"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/生产"
+        android:title="@string/生产">
+        <menu>
+            <item android:title="@string/组托单"
+                android:id="@+id/组托单"/>
+            <item android:title="@string/装箱单"
+                android:id="@+id/装箱单"/>
         </menu>
     </item>
 

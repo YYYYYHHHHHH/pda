@@ -1,6 +1,7 @@
 package com.example.pda;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -62,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                toast.setText(item.getTitle());
+                Intent intent;
+                if ("成品待入库".equals(item.getTitle())) {
+                    intent = new Intent(MainActivity.this, ChoiceHouse.class);
+                    startActivity(intent);
+                } else if ("组托单".equals(item.getTitle())) {
+                    intent = new Intent(MainActivity.this, GroupUserChoiceActivity.class);
+                    startActivity(intent);
+                }
+                toast.setText("菜单名字：" + item.getTitle());
+                toast.setDuration(Toast.LENGTH_LONG);
                 toast.show();
                 return false;
             }
@@ -72,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         Menu menu = navigationView.getMenu();
         MenuItem item = menu.getItem(0);
         SubMenu subMenu = item.getSubMenu();
-        MenuItem item1 = subMenu.getItem(0);
+        subMenu.add(0,10,0,"测试一下");
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

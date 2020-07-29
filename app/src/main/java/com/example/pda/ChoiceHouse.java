@@ -114,7 +114,7 @@ public class ChoiceHouse extends AppCompatActivity {
 
     private void getWhList() {
         final Request request = new Request.Builder()
-                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + menuid)
+                .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetWhList?loginId=" + userBean.getStatus() + "&menuid=" + 1)
                 .get()
                 .build();
         //新建一个线程，用于得到服务器响应的参数
