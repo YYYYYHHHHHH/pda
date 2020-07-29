@@ -55,6 +55,7 @@ public class ChoiceHouse extends AppCompatActivity {
     private SharedPreferences setinfo;
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         x.view().inject(this);
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
