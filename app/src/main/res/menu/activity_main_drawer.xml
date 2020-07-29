@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <item
+        android:id="@+id/入库"
+        android:title="@string/入库">
+        <menu>
+            <item android:title="@string/成品入库"
+                android:id="@+id/成品入库"/>
+            <item android:title="@string/外购入库"
+                android:id="@+id/外购入库"/>
+            <item android:title="@string/其他入库"
+                android:id="@+id/其他入库"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/出库"
+        android:title="@string/出库">
+        <menu>
+            <item android:title="@string/销售出库"
+                android:id="@+id/销售出库"/>
+            <item android:title="@string/返工出库"
+                android:id="@+id/返工出库"/>
+            <item android:title="@string/拆托出库"
+                android:id="@+id/拆托出库"/>
+            <item android:title="@string/材料出库"
+                android:id="@+id/材料出库"/>
+            <item android:title="@string/其他出库"
+                android:id="@+id/其他出库"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/库存"
+        android:title="@string/库存">
+        <menu>
+            <item android:title="@string/库存盘点"
+                android:id="@+id/库存盘点"/>
+        </menu>
+    </item>
+
+</menu>

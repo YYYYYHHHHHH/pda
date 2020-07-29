@@ -12,6 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name="com.example.pda.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.example.pda.ListActivity" android:parentActivityName=".ChoiceHouse" android:label="成品待入库">
 
         </activity>
@@ -24,11 +34,7 @@
         </activity>
 
         <activity android:name="com.example.pda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name="com.example.pda.ChoiceHouse" android:parentActivityName=".LoginActivity" android:label="选择待入库仓库">

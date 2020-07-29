@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">pda</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home">菜单</string>
+    <string name="入库">入库</string>
+    <string name="成品入库">成品待入库</string>
+    <string name="外购入库">外购入库</string>
+    <string name="其他入库">其他入库</string>
+    <string name="销售出库">销售出库</string>
+    <string name="材料出库">材料出库</string>
+    <string name="其他出库">其他出库</string>
+    <string name="拆托出库">拆托出库</string>
+    <string name="返工出库">返工(半成品)出库</string>
+    <string name="出库">出库</string>
+    <string name="库存">库存</string>
+    <string name="库存盘点">库存盘点</string>
 </resources>
