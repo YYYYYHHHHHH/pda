@@ -27,6 +27,7 @@ import com.example.pda.bean.LoginBean;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.util.ApkUpdateUtils;
 import com.example.pda.util.LongClickUtils;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -100,6 +101,12 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             pass.setText(setinfo2.getString("pass", ""));
         }
         onLongClick();
+//        checkVersion();
+    }
+
+    private void checkVersion() {
+        ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
+        apkUpdateUtils.checkVersion();
     }
 
     @Event(value = R.id.login, type = View.OnClickListener.class)
@@ -207,7 +214,6 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                     if (e instanceof ConnectException) {
                         toast.setText("和服务器连接异常！");
                         toast.show();
-
                     }
                 }
             }
