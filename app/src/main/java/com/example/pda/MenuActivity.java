@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @ContentView(R.layout.activity_menuactivity)
-public class MenuActivity extends Activity {
+public class MenuActivity extends AppCompatActivity {
     @ViewInject(R.id.gridView)
     GridView gridView;
     final OkHttpClient client = MyOkHttpClient.getOkHttpClient();

@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,17 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.pda.ListActivity">
+        <activity android:name="com.example.pda.ListActivity" android:parentActivityName=".ChoiceHouse" android:label="成品待入库">
 
         </activity>
-        <activity android:name="com.example.pda.ListTwoActivity">
-
-        </activity>
-        <activity android:name="com.example.pda.ScannerActivity">
+        <activity android:name="com.example.pda.ListTwoActivity" android:parentActivityName=".GroupUserChoiceActivity" android:label="组托">
 
         </activity>
 
-        <activity android:name="com.example.pda.MenuActivity">
+        <activity android:name="com.example.pda.MenuActivity" android:label="菜单">
 
         </activity>
 
@@ -34,17 +31,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.pda.ChoiceHouse">
+        <activity android:name="com.example.pda.ChoiceHouse" android:parentActivityName=".LoginActivity" android:label="选择待入库仓库">
 
         </activity>
 
-        <activity android:name="com.example.pda.GroupUserChoiceActivity">
-
-        </activity>
-
-        <activity android:name="com.example.pda.testActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize">
+        <activity android:name="com.example.pda.GroupUserChoiceActivity" android:parentActivityName=".LoginActivity" android:label="选择客户">
 
         </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

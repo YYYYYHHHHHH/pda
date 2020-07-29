@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="手动添加条形码"
         android:inputType="textPersonName"
@@ -35,7 +35,7 @@
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="395dp"
-        android:layout_height="428dp"
+        android:layout_height="420dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -48,8 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="73dp" >
-        </com.example.pda.commpont.MyListView>
+            tools:layout_editor_absoluteY="73dp"></com.example.pda.commpont.MyListView>
     </ScrollView>
 
     <TextView
@@ -57,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="17dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:text="记数：0件"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"

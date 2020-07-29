@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -48,7 +50,7 @@ import okhttp3.Response;
 import static android.widget.Toast.LENGTH_SHORT;
 
 @ContentView(R.layout.activity_groupuserchoice)
-public class GroupUserChoiceActivity extends Activity {
+public class GroupUserChoiceActivity extends AppCompatActivity {
     @ViewInject(R.id.search)
     private Button search;
     @ViewInject(R.id.user_name)

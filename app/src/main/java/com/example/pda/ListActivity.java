@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -56,7 +57,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @ContentView(R.layout.activity_list)
-public class ListActivity extends Activity {
+public class ListActivity extends AppCompatActivity {
     @ViewInject(R.id.numberText)
     private TextView numberText;
     @ViewInject(R.id.inputCode)
