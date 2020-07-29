@@ -27,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +69,8 @@ public class ListActivity extends Activity {
     private Button clear;
     @ViewInject(R.id.submit)
     private Button submit;
+    @ViewInject(R.id.scrollview)
+    private ScrollView scrollView;
     private final static String SCAN_ACTION = ScanManager.ACTION_DECODE;//default action
     private boolean isScaning = false;
     private SoundPool soundpool = null;
@@ -127,6 +130,14 @@ public class ListActivity extends Activity {
         mScanManager.switchOutputMode(0);
         soundpool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 100); // MODE_RINGTONE
         soundid = soundpool.load("/etc/Scan_new.ogg", 1);
+    }
+
+    private void goToBottom() {
+        scrollView.post(new Runnable() {
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     @Override
@@ -237,7 +248,7 @@ public class ListActivity extends Activity {
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("检查条码中")
                 .show();
-        barcodeStr = barcodeStr;
+        this.barcodeStr = barcodeStr;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -343,6 +354,7 @@ public class ListActivity extends Activity {
                     MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
                     listView.setAdapter(myAdapter);
                     numberText.setText("记数：" + strArr.size() + "件");
+                    goToBottom();
                 }
             } else if (msg.what == 2) {
                 String ReturnMessage = (String) msg.obj;

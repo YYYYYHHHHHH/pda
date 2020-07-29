@@ -5,6 +5,7 @@
         android:id="@+id/content"
         android:layout_width="380dp"
         android:layout_height="40dp"
+        android:textColor="#000000"
         android:text="content"
         android:textSize="20sp"
         android:background="#d7d7d7"
