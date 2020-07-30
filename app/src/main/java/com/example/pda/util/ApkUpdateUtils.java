@@ -11,6 +11,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
@@ -18,8 +19,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -37,10 +41,12 @@ import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
+import androidx.core.content.ContextCompat;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.Util;
 
 public class ApkUpdateUtils {
 
@@ -60,9 +66,10 @@ public class ApkUpdateUtils {
 
     private Dialog downloadDialog;
     /* 下载包安装路径 */
-    private static final String savePath = "/sdcard/updatedemo/";
+    private static final String savePath = "/sdcard/pda";
+//    private static final String savePath = "/data/com.example.pda";
 
-    private static final String saveFileName = savePath + "PDA.apk";
+    private String saveFileName = "";
 
     /* 进度条与通知ui刷新的handler和msg常量 */
     private ProgressBar mProgress;
@@ -210,13 +217,15 @@ public class ApkUpdateUtils {
                 conn.connect();
                 int length = conn.getContentLength();
                 InputStream is = conn.getInputStream();
-
                 File file = new File(savePath);
                 if(!file.exists()){
-                    file.mkdir();
+                    System.out.println(file.mkdir());
                 }
-                String apkFile = saveFileName;
-                File ApkFile = new File(apkFile);
+                String apkFile = apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length());
+                File ApkFile = new File(file, apkFile);
+                if (!ApkFile.exists()) {
+                    ApkFile.createNewFile();
+                }
                 FileOutputStream fos = new FileOutputStream(ApkFile);
 
                 int count = 0;
@@ -261,12 +270,12 @@ public class ApkUpdateUtils {
      * @param url
      */
     private void installApk(){
-        File apkfile = new File(saveFileName);
+        File apkfile = new File(savePath + "/" + apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
         if (!apkfile.exists()) {
             return;
         }
         Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setDataAndType(Uri.parse("file://" + apkfile.toString()), "application/vnd.android.package-archive");
+        i.setDataAndType(Uri.parse("content://" + apkfile.toString()), "application/vnd.android.package-archive");
         mContext.startActivity(i);
 
     }

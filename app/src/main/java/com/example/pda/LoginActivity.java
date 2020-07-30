@@ -1,11 +1,14 @@
 package com.example.pda;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.core.content.ContextCompat;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -100,13 +104,21 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             name.setText(setinfo2.getString("name", ""));
             pass.setText(setinfo2.getString("pass", ""));
         }
+        getPermission();
         onLongClick();
-//        checkVersion();
+        checkVersion();
     }
 
     private void checkVersion() {
         ApkUpdateUtils apkUpdateUtils = new ApkUpdateUtils(this);
         apkUpdateUtils.checkVersion();
+    }
+
+    private void getPermission() {
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
 
     @Event(value = R.id.login, type = View.OnClickListener.class)
