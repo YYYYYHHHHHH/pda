@@ -15,6 +15,7 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -96,6 +97,7 @@ public class ListTwoActivity extends AppCompatActivity {
     private AlertDialog.Builder alert;
     private String numberOfGroups;
     private SharedPreferences setinfo;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class ListTwoActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         x.view().inject(this);
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
@@ -455,6 +458,7 @@ public class ListTwoActivity extends AppCompatActivity {
         }
     };
     private void goToBottom() {
+        vibrator.vibrate(200);
         scrollView.post(new Runnable() {
             public void run() {
                 scrollView.fullScroll(View.FOCUS_DOWN);

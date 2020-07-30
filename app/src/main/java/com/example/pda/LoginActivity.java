@@ -80,7 +80,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     public static Context context;
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     private SharedPreferences setinfo;
-    private List<String> ipList = Arrays.asList("192.168.11.243", "192.168.11.244");
+    private List<String> ipList = Arrays.asList("192.168.11.243", "192.168.11.249");
     private String currentIp;
 
     @Override
