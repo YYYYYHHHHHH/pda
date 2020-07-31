@@ -130,7 +130,18 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private void onClick(View view) {
         String username = name.getText().toString().trim();
         String password = pass.getText().toString().trim();
-        postRequest(username, password);
+        if (preCheck()){
+            postRequest(username, password);
+        }
+    }
+    private boolean preCheck() {
+        if ("true".equals(setinfo.getString("Version", "false"))) {
+            this.finish();
+            toast.setText("请下载最新版本");
+            toast.show();
+            return false;
+        }
+        return true;
     }
 
     private void onLongClick() {

@@ -12,6 +12,7 @@ import java.net.URL;
 
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -56,7 +58,7 @@ public class ApkUpdateUtils {
     private Context mContext;
 
     //提示语
-    private String updateMsg = "有最新的软件包哦，亲快下载吧~";
+    private String updateMsg = "有最新的软件包哦，快下载吧~";
 
     //返回的安装包url
     private String apkUrl = "";
@@ -128,6 +130,9 @@ public class ApkUpdateUtils {
             apkUrl = updateBean.getUrl();
             showNoticeDialog();
         }
+        SharedPreferences setinfo = mContext.getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo.edit().putString("Version", updateBean.getUpdate()).commit();
+
     }
 
     public void checkVersion() {
@@ -178,12 +183,6 @@ public class ApkUpdateUtils {
                 showDownloadDialog();
             }
         });
-        builder.setNegativeButton("以后再说", new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
         noticeDialog = builder.create();
         noticeDialog.show();
     }
@@ -197,13 +196,6 @@ public class ApkUpdateUtils {
         mProgress = (ProgressBar)v.findViewById(R.id.progress);
 
         builder.setView(v);
-        builder.setNegativeButton("取消", new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                interceptFlag = true;
-            }
-        });
         downloadDialog = builder.create();
         downloadDialog.show();
 
