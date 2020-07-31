@@ -278,10 +278,6 @@ public class ApkUpdateUtils {
         File apkFile = new File(externalFilesDir, apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
         Uri apkUri = FileProvider.getUriForFile(mContext,
                 BuildConfig.APPLICATION_ID + ".fileProvider", apkFile);
-//        Intent intent = new Intent(Intent.ACTION_DELETE);
-//        intent.setData(Uri.parse("package:" + "com.example.domn"));
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        mContext.startActivity(intent);
         Intent installIntent = new Intent(Intent.ACTION_VIEW);
         installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
