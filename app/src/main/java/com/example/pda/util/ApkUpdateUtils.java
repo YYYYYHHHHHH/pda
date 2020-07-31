@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.pda.BuildConfig;
 import com.example.pda.LoginActivity;
 import com.example.pda.R;
 import com.example.pda.bean.UpdateBean;
@@ -42,6 +43,8 @@ import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -217,9 +220,10 @@ public class ApkUpdateUtils {
                 conn.connect();
                 int length = conn.getContentLength();
                 InputStream is = conn.getInputStream();
-                File file = new File(savePath);
-                if(!file.exists()){
-                    System.out.println(file.mkdir());
+//                File file = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                File file = new File(Environment.getExternalStorageDirectory(), "pda");
+                if (!file.exists()){
+                    file.mkdir();
                 }
                 String apkFile = apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length());
                 File ApkFile = new File(file, apkFile);
@@ -270,13 +274,18 @@ public class ApkUpdateUtils {
      * @param url
      */
     private void installApk(){
-        File apkfile = new File(savePath + "/" + apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
-        if (!apkfile.exists()) {
-            return;
-        }
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setDataAndType(Uri.parse("content://" + apkfile.toString()), "application/vnd.android.package-archive");
-        mContext.startActivity(i);
-
+        File externalFilesDir = new File(Environment.getExternalStorageDirectory(),"pda") ;
+        File apkFile = new File(externalFilesDir, apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
+        Uri apkUri = FileProvider.getUriForFile(mContext,
+                BuildConfig.APPLICATION_ID + ".fileProvider", apkFile);
+//        Intent intent = new Intent(Intent.ACTION_DELETE);
+//        intent.setData(Uri.parse("package:" + "com.example.domn"));
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        mContext.startActivity(intent);
+        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+        installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        mContext.startActivity(installIntent);
     }
 }

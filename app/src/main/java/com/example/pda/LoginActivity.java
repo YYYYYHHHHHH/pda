@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.SubscriptionManager;
@@ -42,6 +44,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -51,6 +54,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -106,7 +111,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         }
         getPermission();
         onLongClick();
-        checkVersion();
+//        checkVersion();
     }
 
     private void checkVersion() {
