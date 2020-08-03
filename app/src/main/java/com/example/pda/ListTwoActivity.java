@@ -105,7 +105,7 @@ public class ListTwoActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         x.view().inject(this);
-        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
@@ -145,7 +145,10 @@ public class ListTwoActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
-            checkBarCode(barcodeStr);
+            if (!isScaning) {
+                isScaning = true;
+                checkBarCode(barcodeStr);
+            }
         }
     };
 
@@ -295,6 +298,7 @@ public class ListTwoActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     dialog.cancel();
+                    isScaning = false;
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
                         toast.setText("请求超时！");
@@ -367,6 +371,7 @@ public class ListTwoActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             dialog.cancel();
+            isScaning = false;
             if (msg.what == 1) {
                 String ReturnMessage = (String) msg.obj;
                 Log.i("获取的返回信息", ReturnMessage);
@@ -457,6 +462,7 @@ public class ListTwoActivity extends AppCompatActivity {
             }
         }
     };
+
     private void goToBottom() {
         vibrator.vibrate(200);
         scrollView.post(new Runnable() {
@@ -465,6 +471,7 @@ public class ListTwoActivity extends AppCompatActivity {
             }
         });
     }
+
     class MyAdapter extends BaseAdapter {
         private Context content;
         private ArrayList<MyTwoContent> datas;

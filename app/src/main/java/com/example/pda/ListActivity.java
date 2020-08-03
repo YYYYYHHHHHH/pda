@@ -122,7 +122,11 @@ public class ListActivity extends AppCompatActivity {
                 toast.show();
                 return;
             }
-            checkBarCode(barcodeStr);
+            if(!isScaning) {
+                isScaning = true;
+                checkBarCode(barcodeStr);
+            }
+
         }
     };
 
@@ -315,6 +319,7 @@ public class ListActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     dialog.cancel();
+                    isScaning = false;
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
                         toast.setText("请求超时！");
@@ -342,6 +347,7 @@ public class ListActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             dialog.cancel();
+            isScaning = false;
             if (msg.what == 1) {
                 String ReturnMessage = (String) msg.obj;
                 Log.i("获取的返回信息", ReturnMessage);
