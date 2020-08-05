@@ -374,23 +374,23 @@ public class ListActivity extends AppCompatActivity {
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
 
-                new AlertDialog.Builder(ListActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        }).show();
-//                toast.setText(mesg);
-//                toast.show();
-                if (status != 0) {
 
+                if (status != 0) {
+                    toast.setText(mesg);
+                    toast.show();
                 } else {
+                    new AlertDialog.Builder(ListActivity.this).setTitle("待入库单号号为：【" + mesg + "】")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
                     strArr.clear();
                     MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
                     listView.setAdapter(myAdapter);
