@@ -99,14 +99,7 @@ public class MenuActivity extends AppCompatActivity {
                 try {
                     //回调
                     response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
-                        mHandler.obtainMessage(1, response.body().string()).sendToTarget();
-
-                    } else {
-                        dialog.cancel();
-                        throw new IOException("Unexpected code:" + response);
-                    }
+                    mHandler.obtainMessage(1, response).sendToTarget();
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
@@ -199,8 +192,19 @@ public class MenuActivity extends AppCompatActivity {
         @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(Message msg) {
+            Response response = (Response) msg.obj;
+            if (!response.isSuccessful()) {
+                toast.setText("服务器出错");
+                toast.show();
+                return;
+            }
             if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
+                String ReturnMessage = null;
+                try {
+                    ReturnMessage = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.i("获取的返回信息", ReturnMessage);
                 MenuBgBean menuBgBean = new Gson().fromJson(ReturnMessage, MenuBgBean.class);
                 rows = menuBgBean.getRows();

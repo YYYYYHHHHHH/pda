@@ -272,13 +272,7 @@ public class ListActivity extends AppCompatActivity {
                 try {
                     //回调
                     response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        mHandler.obtainMessage(1, response.body().string()).sendToTarget();
-
-                    } else {
-                        dialog.cancel();
-                        throw new IOException("Unexpected code:" + response);
-                    }
+                    mHandler.obtainMessage(1, response).sendToTarget();
                 } catch (IOException e) {
                     dialog.cancel();
                     e.printStackTrace();
@@ -317,13 +311,7 @@ public class ListActivity extends AppCompatActivity {
                 try {
                     //回调
                     response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        mHandler.obtainMessage(2, response.body().string()).sendToTarget();
-
-                    } else {
-                        dialog.cancel();
-                        throw new IOException("Unexpected code:" + response);
-                    }
+                    mHandler.obtainMessage(2, response).sendToTarget();
                 } catch (IOException e) {
                     dialog.cancel();
                     isScaning = false;
@@ -356,8 +344,19 @@ public class ListActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             dialog.cancel();
             isScaning = false;
+            Response response = (Response)msg.obj;
+            if (!response.isSuccessful()) {
+                toast.setText("服务器出错");
+                toast.show();
+                return;
+            }
             if (msg.what == 1) {
-                String ReturnMessage = (String) msg.obj;
+                String ReturnMessage = null;
+                try {
+                    ReturnMessage = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.i("获取的返回信息", ReturnMessage);
                 BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
@@ -376,13 +375,16 @@ public class ListActivity extends AppCompatActivity {
                     goToBottom();
                 }
             } else if (msg.what == 2) {
-                String ReturnMessage = (String) msg.obj;
+                String ReturnMessage = null;
+                try {
+                    ReturnMessage = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Log.i("获取的返回信息", ReturnMessage);
                 BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
                 int status = Integer.parseInt(barCodeBean.getStatus());
                 String mesg = barCodeBean.getMsg();
-
-
                 if (status != 0) {
                     toast.setText(mesg);
                     toast.show();
