@@ -49,6 +49,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import androidx.appcompat.app.AlertDialog;
@@ -88,6 +89,7 @@ public class ListActivity extends AppCompatActivity {
     private ArrayList<MyContent> strArr = null;
     private SharedPreferences setinfo;
     private Vibrator vibrator;
+    private SharedPreferences ctxInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +97,6 @@ public class ListActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         x.view().inject(this);
-        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
-        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
-        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
-        Intent intent = getIntent();
-        whId = intent.getStringExtra("whId");
-        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP, 0, 70);
-        this.listView();
     }
 
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
@@ -148,11 +142,23 @@ public class ListActivity extends AppCompatActivity {
             }
         });
     }
+    private void initScore() {
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+        setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        ctxInfo = getPreferences(Activity.MODE_PRIVATE);
+        userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
+        Intent intent = getIntent();
+        whId = intent.getStringExtra("whId");
+        toast = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP, 0, 70);
+        this.listView();
+    }
 
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        initScore();
         initScan();
 //        showScanResult.setText("");
         IntentFilter filter = new IntentFilter();
@@ -171,6 +177,7 @@ public class ListActivity extends AppCompatActivity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
+        ctxInfo.edit().putString("list", new Gson().toJson(strArr)).commit();
         if (mScanManager != null) {
             mScanManager.stopDecode();
             isScaning = false;
@@ -333,14 +340,15 @@ public class ListActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
-
     }
 
     private void listView() {
-        strArr = new ArrayList<>();
+        String list = ctxInfo.getString("list", "");
+        strArr = "".equals(list) ? new ArrayList<>() : new Gson().fromJson(list, ArrayList.class);
+        numberText.setText("记数：" + strArr.size() + "件");
         MyAdapter myAdapter = new ListActivity.MyAdapter(this, strArr);
         listView.setAdapter(myAdapter);
+
     }
 
     private Handler mHandler = new Handler() {
@@ -394,6 +402,7 @@ public class ListActivity extends AppCompatActivity {
                     strArr.clear();
                     MyAdapter myAdapter = new ListActivity.MyAdapter(ListActivity.this, strArr);
                     listView.setAdapter(myAdapter);
+                    ctxInfo.edit().putString("list", "").commit();
                     numberText.setText("记数：" + strArr.size() + "件");
                 }
             }

@@ -65,6 +65,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 @ContentView(R.layout.activity_loginactivity)
 public class LoginActivity extends Activity implements View.OnLayoutChangeListener {
     //用xUtils进行控件绑定
@@ -111,7 +112,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         }
         getPermission();
         onLongClick();
-        checkVersion();
+//        checkVersion();
     }
 
     private void checkVersion() {
@@ -130,10 +131,11 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private void onClick(View view) {
         String username = name.getText().toString().trim();
         String password = pass.getText().toString().trim();
-        if (preCheck()){
+        if (preCheck()) {
             postRequest(username, password);
         }
     }
+
     private boolean preCheck() {
         if ("true".equals(setinfo.getString("Version", "false"))) {
             this.finish();
@@ -173,6 +175,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
