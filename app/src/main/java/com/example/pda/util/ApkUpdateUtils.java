@@ -11,8 +11,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 
-import android.Manifest;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
@@ -21,10 +19,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.pda.BuildConfig;
-import com.example.pda.LoginActivity;
 import com.example.pda.R;
 import com.example.pda.bean.UpdateBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
@@ -44,14 +39,11 @@ import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.Util;
 
 public class ApkUpdateUtils {
 
@@ -63,9 +55,9 @@ public class ApkUpdateUtils {
     //返回的安装包url
     private String apkUrl = "";
 
-    private String requestUrl = "http://175.24.14.165";
+    private String requestUrl = "http://192.168.11.243";
 
-    private String port = "8080";
+    private String port = "8081";
 
     private Dialog noticeDialog;
 
@@ -266,6 +258,8 @@ public class ApkUpdateUtils {
      * @param url
      */
     private void installApk(){
+        SharedPreferences setinfo = mContext.getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
+        setinfo.edit().putString("Version", "false").commit();
         File externalFilesDir = new File(Environment.getExternalStorageDirectory(),"pda") ;
         File apkFile = new File(externalFilesDir, apkUrl.substring(apkUrl.lastIndexOf("/") + 1, apkUrl.length()));
         Uri apkUri = FileProvider.getUriForFile(mContext,

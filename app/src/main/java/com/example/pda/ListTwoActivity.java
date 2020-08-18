@@ -504,15 +504,15 @@ public class ListTwoActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            testActivity.ViewHolder viewHolder = null;
+            ViewHolder viewHolder = null;
             if (convertView == null) {
                 convertView = LayoutInflater.from(content).inflate(R.layout.item_slide, null);
-                viewHolder = new testActivity.ViewHolder();
+                viewHolder = new ViewHolder();
                 viewHolder.contentView = (TextView) convertView.findViewById(R.id.content);
                 viewHolder.menuView = (TextView) convertView.findViewById(R.id.menu);
                 convertView.setTag(viewHolder);
             } else {
-                viewHolder = (testActivity.ViewHolder) convertView.getTag();
+                viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.contentView.setText(datas.get(position).getContent());
             if (!datas.get(position).getGroup()) {

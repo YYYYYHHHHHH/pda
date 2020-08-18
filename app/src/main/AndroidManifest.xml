@@ -22,23 +22,19 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths"/>
         </provider>
-        <activity
-            android:name="com.example.pda.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity android:name="com.example.pda.ListActivity" android:parentActivityName=".ChoiceHouse" android:label="成品待入库">
+
+        <activity android:name="com.example.pda.ui.lists.ListOneActivity" android:parentActivityName=".ui.ChoiceHouse" android:label="成品待入库">
 
         </activity>
-        <activity android:name="com.example.pda.ListTwoActivity" android:parentActivityName=".GroupUserChoiceActivity" android:label="组托">
+        <activity android:name="com.example.pda.ListTwoActivity" android:parentActivityName=".ui.GroupUserChoiceActivity" android:label="组托">
 
         </activity>
 
-        <activity android:name="com.example.pda.MenuActivity" android:label="菜单">
+        <activity android:name="com.example.pda.ui.MenuActivity" android:label="菜单">
 
         </activity>
 
-        <activity android:name="com.example.pda.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
+        <activity android:name="com.example.pda.ui.LoginActivity" android:windowSoftInputMode="stateHidden|stateUnchanged|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,11 +43,11 @@
 
         </activity>
 
-        <activity android:name="com.example.pda.ChoiceHouse" android:parentActivityName=".LoginActivity" android:label="选择待入库仓库">
+        <activity android:name="com.example.pda.ui.ChoiceHouse" android:parentActivityName=".ui.LoginActivity" android:label="选择待入库仓库">
 
         </activity>
 
-        <activity android:name="com.example.pda.GroupUserChoiceActivity" android:parentActivityName=".LoginActivity" android:label="选择客户">
+        <activity android:name="com.example.pda.ui.GroupUserChoiceActivity" android:parentActivityName=".ui.LoginActivity" android:label="选择客户">
 
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package com.example.pda;
+package com.example.pda.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,18 +8,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.example.pda.ListActivity;
+import com.example.pda.R;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.WhBean;
 import com.example.pda.bean.WhListBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.ui.lists.ListOneActivity;
 import com.google.gson.Gson;
 
 import org.xutils.view.annotation.ContentView;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -105,7 +108,7 @@ public class ChoiceHouse extends AppCompatActivity {
             toast.setText("请先选择仓库");
             toast.show();
         } else {
-            Intent i = new Intent(ChoiceHouse.this, ListActivity.class);
+            Intent i = new Intent(ChoiceHouse.this, ListOneActivity.class);
             i.putExtra("whId", whId);
             startActivity(i);
         }
@@ -123,9 +126,12 @@ public class ChoiceHouse extends AppCompatActivity {
             public void run() {
                 Response response = null;
                 try {
-                    //回调
                     response = client.newCall(request).execute();
-                    mHandler.obtainMessage(1, response).sendToTarget();
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("response", response);
+                    String resStr = response.body().string();
+                    hashMap.put("resStr", resStr);
+                    mHandler.obtainMessage(1, hashMap).sendToTarget();
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
@@ -145,20 +151,15 @@ public class ChoiceHouse extends AppCompatActivity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Response response = (Response) msg.obj;
+            HashMap hashMap = (HashMap) msg.obj;
+            Response response = (Response) hashMap.get("response");
+            String ReturnMessage = (String) hashMap.get("resStr");
             if (!response.isSuccessful()) {
                 toast.setText("服务器出错");
                 toast.show();
                 return;
             }
             if (msg.what == 1) {
-                String ReturnMessage = null;
-                try {
-                    ReturnMessage = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.i("获取的返回信息", ReturnMessage);
                 final WhListBean whListBean = new Gson().fromJson(ReturnMessage, WhListBean.class);
                 WhList = whListBean.getRows();
                 if (WhList.size() == 1) {

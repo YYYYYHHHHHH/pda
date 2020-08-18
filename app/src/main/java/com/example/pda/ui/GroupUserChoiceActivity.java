@@ -1,6 +1,5 @@
-package com.example.pda;
+package com.example.pda.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,22 +8,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.example.pda.ListTwoActivity;
+import com.example.pda.R;
 import com.example.pda.bean.CustomerBean;
 import com.example.pda.bean.CustomerListBean;
-import com.example.pda.bean.WhBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
 import com.google.gson.Gson;
@@ -38,7 +34,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
@@ -46,8 +42,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 @ContentView(R.layout.activity_groupuserchoice)
 public class GroupUserChoiceActivity extends AppCompatActivity {
@@ -159,9 +153,12 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
             public void run() {
                 Response response = null;
                 try {
-                    //回调
                     response = client.newCall(request).execute();
-                    mHandler.obtainMessage(1, response).sendToTarget();
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("response", response);
+                    String resStr = response.body().string();
+                    hashMap.put("resStr", resStr);
+                    mHandler.obtainMessage(1, hashMap).sendToTarget();
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
@@ -230,20 +227,15 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Response response = (Response) msg.obj;
+            HashMap hashMap = (HashMap) msg.obj;
+            Response response = (Response) hashMap.get("response");
+            String ReturnMessage = (String) hashMap.get("resStr");
             if (!response.isSuccessful()) {
                 toast.setText("服务器出错");
                 toast.show();
                 return;
             }
             if (msg.what == 1) {
-                String ReturnMessage = null;
-                try {
-                    ReturnMessage = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.i("获取的返回信息", ReturnMessage);
                 CustomerListBean customerListBean = new Gson().fromJson(ReturnMessage, CustomerListBean.class);
                 customerList = customerListBean.getRows();
                 OptionsPickerView pvOptions = new OptionsPickerView.Builder(GroupUserChoiceActivity.this, new OptionsPickerView.OnOptionsSelectListener() {

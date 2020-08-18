@@ -1,11 +1,9 @@
 package com.example.pda.bean.globalbean;
 
-import android.content.Context;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Toast;
 
-import com.example.pda.LoginActivity;
+import com.example.pda.ui.LoginActivity;
 
 public class MyToast {
     private static Toast toast = null;

@@ -1,23 +1,16 @@
-package com.example.pda;
+package com.example.pda.ui;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.telephony.SubscriptionManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
+import com.example.pda.R;
 import com.example.pda.bean.LoginBean;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
@@ -38,27 +32,20 @@ import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
-import org.reactivestreams.Subscription;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -112,7 +99,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         }
         getPermission();
         onLongClick();
-//        checkVersion();
+        checkVersion();
     }
 
     private void checkVersion() {
@@ -225,11 +212,13 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             public void run() {
                 Response response = null;
                 try {
-                    //回调
                     response = client.newCall(request).execute();
-                    mHandler.obtainMessage(1, response).sendToTarget();
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("response", response);
+                    String resStr = response.body().string();
+                    hashMap.put("resStr", resStr);
+                    mHandler.obtainMessage(1, hashMap).sendToTarget();
                 } catch (IOException e) {
-                    dialog.cancel();
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
                         toast.setText("请求超时！");
@@ -239,6 +228,8 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                         toast.setText("和服务器连接异常！");
                         toast.show();
                     }
+                } finally {
+                    dialog.cancel();
                 }
             }
         }).start();
@@ -247,21 +238,15 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            HashMap hashMap = (HashMap) msg.obj;
+            Response response = (Response) hashMap.get("response");
+            String ReturnMessage = (String) hashMap.get("resStr");
+            if (!response.isSuccessful()) {
+                toast.setText("服务器出错");
+                toast.show();
+                return;
+            }
             if (msg.what == 1) {
-                dialog.cancel();
-                Response response = (Response) msg.obj;
-                if (!response.isSuccessful()) {
-                    toast.setText("服务器出错");
-                    toast.show();
-                    return;
-                }
-                String ReturnMessage = null;
-                try {
-                    ReturnMessage = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.i("获取的返回信息", ReturnMessage);
                 final UserBean userBean = new Gson().fromJson(ReturnMessage, UserBean.class);
                 final int status = Integer.parseInt(userBean.getStatus());
                 final String mes = userBean.getMsg();
@@ -292,8 +277,6 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                     Toast ts = Toast.makeText(getBaseContext(), mes, Toast.LENGTH_LONG);
                     ts.show();
                 }
-                dialog.cancel();
-
             } else {
 
             }

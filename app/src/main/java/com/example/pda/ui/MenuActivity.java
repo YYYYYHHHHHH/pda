@@ -1,4 +1,4 @@
-package com.example.pda;
+package com.example.pda.ui;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -24,11 +24,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.widget.Toast;
 
+import com.example.pda.R;
 import com.example.pda.bean.MenuBean;
 import com.example.pda.bean.MenuBgBean;
 import com.example.pda.bean.UserBean;
