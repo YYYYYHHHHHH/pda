@@ -148,11 +148,11 @@ public class ApkUpdateUtils {
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
-                        toast.setText("请求超时！");
+                        toast.setText("更新服务超时！");
                         toast.show();
                     }
                     if (e instanceof ConnectException) {
-                        toast.setText("和服务器连接异常！");
+                        toast.setText("更新服务未开启！");
                         toast.show();
 
                     }

@@ -30,6 +30,10 @@
 
         </activity>
 
+        <activity android:name="com.example.pda.ui.lists.ListThreeActivity" android:parentActivityName=".ui.MenuActivity" android:label="返工出库">
+
+        </activity>
+
         <activity android:name="com.example.pda.ui.MenuActivity" android:label="菜单">
 
         </activity>

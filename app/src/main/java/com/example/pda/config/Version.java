@@ -1,7 +1,7 @@
 package com.example.pda.config;
 
 public class Version {
-    private static final String VERSION = "1.0.0-PDA";
+    private static final String VERSION = "1.0.1-PDA";
 
     public static String getVersion() {
         return VERSION;

@@ -72,7 +72,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
         x.view().inject(this);
         numList = new ArrayList<>();
         numList.add("空");
-        for (int i = 1; i < 36; i++) {
+        for (int i = 1; i <= 120; i++) {
             String item = "";
             item += i;
             if (item.length() == 1)

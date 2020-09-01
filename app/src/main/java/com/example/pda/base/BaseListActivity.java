@@ -514,6 +514,13 @@ public class BaseListActivity extends AppCompatActivity {
             } else {
                 viewHolder = (BaseListActivity.ViewHolder) convertView.getTag();
             }
+
+            String s = datas.get(position).getContent();
+            viewHolder.contentView.setTextSize(20);
+            if (s.length() >= 25) {
+                viewHolder.contentView.setTextSize(16);
+            }
+
             viewHolder.contentView.setText(datas.get(position).getContent());
 
             viewHolder.contentView.setOnClickListener(new View.OnClickListener() {

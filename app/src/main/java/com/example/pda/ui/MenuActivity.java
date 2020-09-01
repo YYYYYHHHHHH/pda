@@ -34,6 +34,7 @@ import com.example.pda.bean.MenuBgBean;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.ui.lists.ListThreeActivity;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
@@ -181,6 +182,9 @@ public class MenuActivity extends AppCompatActivity {
                         Intent intent = new Intent(MenuActivity.this, ChoiceHouse.class);
                         intent.putExtra("menuid", rows.get(arg0).getMenuId());
                         startActivity(intent);
+                    } else if (title.contains("返工出库")) {
+                        Intent intent = new Intent(MenuActivity.this, ListThreeActivity.class);
+                        startActivity(intent);
                     }
                 }
             });
@@ -220,6 +224,9 @@ public class MenuActivity extends AppCompatActivity {
                         }
                         case "成品待入库\r\n": {
                             image = R.mipmap.ruku;
+                        }
+                        case "返工出库\r\n": {
+                            image = R.mipmap.fangong;
                         }
                     }
                     hashMap.put("image", image);
