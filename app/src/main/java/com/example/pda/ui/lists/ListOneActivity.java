@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 
 import com.example.pda.base.BaseListActivity;
+import com.example.pda.bean.BarCodeBean;
 import com.example.pda.commpont.MyContent;
+import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
@@ -33,10 +35,27 @@ public class ListOneActivity extends BaseListActivity {
     }
 
     @Override
+    protected void CheckBarPostProcessing(String ReturnMessage) {
+        BarCodeBean barCodeBean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
+        int status = Integer.parseInt(barCodeBean.getStatus());
+        String mesg = barCodeBean.getMsg();
+        if (status != 0) {
+            if (status == -100) {
+                mesg += "，或者扫描不清晰";
+            }
+            toast.setText(mesg);
+            toast.show();
+        } else {
+            strArr.add(new MyContent(barcodeStr, barCodeBean.getProId()));
+            renderList();
+        }
+    }
+
+    @Override
     protected void submitBarCode() {
         String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToStock?loginId=" + userBean.getStatus() + "&whId=" + whId;
         for (MyContent myContent : strArr) {
-            url += "&barcodes=" + myContent.getContent();
+            url += "&ids=" + myContent.getProId();
         }
         final Request request = new Request.Builder()
                 .url(url)
@@ -45,4 +64,6 @@ public class ListOneActivity extends BaseListActivity {
         dialog.setHintText("提交中").show();
         threadPool.execute(new SubmitBarRunable(request));
     }
+
+
 }

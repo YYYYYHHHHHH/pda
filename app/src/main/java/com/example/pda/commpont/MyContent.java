@@ -6,6 +6,15 @@ public class MyContent {
     private String content;
     private String bTrue;
     private String iNum;
+    private int proId;
+
+    public int getProId() {
+        return proId;
+    }
+
+    public void setProId(int proId) {
+        this.proId = proId;
+    }
 
     public String getiNum() {
         return iNum;
@@ -36,6 +45,11 @@ public class MyContent {
 
     public MyContent(String content) {
         this.content = content;
+    }
+
+    public MyContent(String content, int proId) {
+        this.content = content;
+        this.proId = proId;
     }
 
     public String getContent() {

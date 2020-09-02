@@ -55,7 +55,7 @@ import okhttp3.Response;
 
 public class BaseListActivity extends AppCompatActivity {
     protected final static String SCAN_ACTION = ScanManager.ACTION_DECODE;
-    protected static int MAX_BAR = 100;
+    protected static int MAX_BAR = 200;
     protected boolean isScaning = false;
     protected SoundPool soundpool = null;
     protected String barcodeStr;
