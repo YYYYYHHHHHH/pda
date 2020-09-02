@@ -7,6 +7,15 @@ public class BarCodeTwoBean {
     private String Msg;
     private String custId;
     private String custName;
+    private int proId;
+
+    public int getProId() {
+        return proId;
+    }
+
+    public void setProId(int proId) {
+        this.proId = proId;
+    }
 
     public String getCustId() {
         return custId;

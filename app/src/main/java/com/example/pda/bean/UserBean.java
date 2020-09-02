@@ -4,6 +4,15 @@ public class UserBean {
     private String Status;
     private  String Msg;
     private String User;
+    private String UserId;
+
+    public String getUserId() {
+        return UserId;
+    }
+
+    public void setUserId(String userId) {
+        UserId = userId;
+    }
 
     public String getStatus() {
         return Status;

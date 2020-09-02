@@ -199,11 +199,11 @@ public class ListTwoActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-//        else if (!"空".equals(numberOfGroups) && strArr.size() != Integer.parseInt(numberOfGroups)) {
-//            toast.setText("扫描数量和组托数量不一");
-//            toast.show();
-//            return;
-//        }
+        else if (!"空".equals(numberOfGroups) && strArr.size() == Integer.parseInt(numberOfGroups)) {
+            toast.setText("扫描数量不能多于组托数量");
+            toast.show();
+            return;
+        }
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -312,7 +312,7 @@ public class ListTwoActivity extends AppCompatActivity {
     private void submitBarCode() {
         String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToPackage?loginId=" + userBean.getStatus() + "&CustId=" + csId;
         for (MyTwoContent myTwoContent : strArr) {
-            url += "&barcodes=" + myTwoContent.getContent();
+            url += "&ids=" + myTwoContent.getProId();
         }
         final Request request = new Request.Builder()
                 .url(url)
@@ -419,7 +419,7 @@ public class ListTwoActivity extends AppCompatActivity {
                         alert.show();
 
                     } else {
-                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
+                        MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass(),barCodeTwoBean.getProId());
                         if (isGroup && strArr.size() != 0 && !strArr.get(0).getInvClass().equals(myTwoContent.getInvClass())) {
                             myTwoContent.setGroup(false);
                         }

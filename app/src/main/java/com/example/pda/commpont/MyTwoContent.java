@@ -6,14 +6,34 @@ public class MyTwoContent {
     private String content;
     private Boolean isGroup = true;
     private String invClass;
+    private int proId;
+
+    public int getProId() {
+        return proId;
+    }
+
+    public void setProId(int proId) {
+        this.proId = proId;
+    }
 
     public MyTwoContent(String content) {
         this.content = content;
     }
 
+    public MyTwoContent(String content, int proId) {
+        this.content = content;
+        this.proId = proId;
+    }
+
     public MyTwoContent(String content, String invClass) {
         this.content = content;
         this.invClass = invClass;
+    }
+
+    public MyTwoContent(String content, String invClass, int proId) {
+        this.content = content;
+        this.invClass = invClass;
+        this.proId = proId;
     }
 
     public String getInvClass() {
