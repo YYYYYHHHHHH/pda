@@ -199,11 +199,11 @@ public class ListTwoActivity extends AppCompatActivity {
             toast.show();
             return;
         }
-        else if (!"空".equals(numberOfGroups) && strArr.size() == Integer.parseInt(numberOfGroups)) {
-            toast.setText("扫描数量不能多于组托数量");
-            toast.show();
-            return;
-        }
+//        else if (!"空".equals(numberOfGroups) && strArr.size() == Integer.parseInt(numberOfGroups)) {
+//            toast.setText("扫描数量不能多于组托数量");
+//            toast.show();
+//            return;
+//        }
         new AlertDialog.Builder(ListTwoActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
