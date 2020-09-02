@@ -514,7 +514,13 @@ public class ListTwoActivity extends AppCompatActivity {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.contentView.setText(datas.get(position).getContent());
+            String s = datas.get(position).getContent();
+            viewHolder.contentView.setTextSize(20);
+            if (s.length() >= 25) {
+                viewHolder.contentView.setTextSize(16);
+            }
+
+            viewHolder.contentView.setText(s);
             if (!datas.get(position).getGroup()) {
                 viewHolder.contentView.setTextColor(Color.RED);
             } else {

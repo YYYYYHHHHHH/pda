@@ -521,7 +521,7 @@ public class BaseListActivity extends AppCompatActivity {
                 viewHolder.contentView.setTextSize(16);
             }
 
-            viewHolder.contentView.setText(datas.get(position).getContent());
+            viewHolder.contentView.setText(s);
 
             viewHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
