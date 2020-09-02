@@ -91,7 +91,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         SharedPreferences setinfo2 = getPreferences(Activity.MODE_PRIVATE);
         String isSave = setinfo2.getString("isSave", "0");
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
-        currentIp = setinfo.getString("Ip", "192.168.11.243");
+        currentIp = setinfo.getString("Ip", "192.168.11.249");
         if ("1".equals(isSave)) {
             this.isSave.setChecked(true);
             name.setText(setinfo2.getString("name", ""));
