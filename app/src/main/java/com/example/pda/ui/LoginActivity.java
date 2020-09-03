@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
 import com.example.pda.util.ApkUpdateUtils;
 import com.example.pda.util.LongClickUtils;
+import com.example.pda.util.ToastUtils;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
@@ -70,7 +72,6 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     EditText pass;
     @ViewInject(R.id.login)
     Button btn;
-    private Toast toast;
     private ZLoadingDialog dialog;
     private int screenHeight = 0;//屏幕高度
     private int keyHeight = 0; //软件盘弹起后所占高度
@@ -87,7 +88,6 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
         screenHeight = this.getWindowManager().getDefaultDisplay().getHeight(); //获取屏幕高度
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
         this.context = getBaseContext();
-        toast = MyToast.getToast();
         SharedPreferences setinfo2 = getPreferences(Activity.MODE_PRIVATE);
         String isSave = setinfo2.getString("isSave", "0");
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
@@ -126,8 +126,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
     private boolean preCheck() {
         if ("true".equals(setinfo.getString("Version", "false"))) {
             this.finish();
-            toast.setText("请下载最新版本");
-            toast.show();
+            ToastUtils.showShort("请下载最新版本");
             return false;
         }
         return true;
@@ -143,8 +142,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                         final String s = ipList.get(options1);
                         currentIp = s;
                         setinfo.edit().putString("Ip", currentIp).commit();
-                        toast.setText("当前服务器IP为：" + currentIp);
-                        toast.show();
+                        ToastUtils.showShort("当前服务器IP为：" + currentIp);
                     }
                 })
                         .setDividerColor(Color.BLACK)
@@ -221,12 +219,10 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
-                        toast.setText("请求超时！");
-                        toast.show();
+                        ToastUtils.showShort("请求超时！");
                     }
                     if (e instanceof ConnectException) {
-                        toast.setText("和服务器连接异常！");
-                        toast.show();
+                        ToastUtils.showShort("和服务器连接异常！");
                     }
                 } finally {
                     dialog.cancel();
@@ -242,8 +238,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
             Response response = (Response) hashMap.get("response");
             String ReturnMessage = (String) hashMap.get("resStr");
             if (!response.isSuccessful()) {
-                toast.setText("服务器出错");
-                toast.show();
+                ToastUtils.showShort("服务器出错");
                 return;
             }
             if (msg.what == 1) {
@@ -274,8 +269,7 @@ public class LoginActivity extends Activity implements View.OnLayoutChangeListen
                     LoginActivity.this.finish();
                     startActivity(i);
                 } else {
-                    Toast ts = Toast.makeText(getBaseContext(), mes, Toast.LENGTH_LONG);
-                    ts.show();
+                    ToastUtils.showShort(mes);
                 }
             } else {
 

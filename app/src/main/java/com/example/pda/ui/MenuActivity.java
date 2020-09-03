@@ -215,7 +215,9 @@ public class MenuActivity extends AppCompatActivity {
                 arrayList = new ArrayList<HashMap<String, Object>>();
                 for (int i = 0; i < rows.size(); i++) {
                     HashMap<String, Object> hashMap = new HashMap<String, Object>();
-                    hashMap.put("text", rows.get(i).getMenuTitle());
+                    String s = rows.get(i).getMenuTitle();
+                    s = s.endsWith("\r\n") ? s : s + "\r\n";
+                    hashMap.put("text", s);
                     Object image = R.mipmap.mima;
                     switch (rows.get(i).getMenuTitle()) {
                         case "组托单\r\n": {
@@ -224,8 +226,9 @@ public class MenuActivity extends AppCompatActivity {
                         }
                         case "成品待入库\r\n": {
                             image = R.mipmap.ruku;
+                            break;
                         }
-                        case "返工出库\r\n": {
+                        case "返工出库": {
                             image = R.mipmap.fangong;
                         }
                     }

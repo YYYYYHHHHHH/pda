@@ -13,7 +13,6 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +23,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pda.R;
 import com.example.pda.bean.BarCodeBean;
 import com.example.pda.bean.UserBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
-import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.util.ToastUtils;
 import com.example.pda.commpont.MyContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -62,7 +60,6 @@ public class BaseListActivity extends AppCompatActivity {
     protected ScanManager mScanManager;
     protected UserBean userBean;
     protected Set<SlideLayout> sets = new HashSet();
-    protected Toast toast = MyToast.getToast();
     protected int soundid;
     protected final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
     protected ArrayList<MyContent> strArr = null;
@@ -109,12 +106,10 @@ public class BaseListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String code = inputCode.getText().toString();
                 if ("".equals(code)) {
-                    toast.setText("不能添加空条码");
-                    toast.show();
+                    ToastUtils.showShort("不能添加空条码");
                 } else {
                     if (strArr.contains(new MyContent(code))) {
-                        toast.setText("不能重复扫码");
-                        toast.show();
+                        ToastUtils.showShort("不能重复扫码");
                         return;
                     }
                     checkBarCode(code);
@@ -128,8 +123,7 @@ public class BaseListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (strArr.size() <= 0) {
-                    toast.setText("没有要提交的条码");
-                    toast.show();
+                    ToastUtils.showShort("没有要提交的条码");
                     return;
                 }
                 new AlertDialog.Builder(BaseListActivity.this).setTitle("一共有" + strArr.size() + "件，确认要提交吗")
@@ -220,13 +214,12 @@ public class BaseListActivity extends AppCompatActivity {
         barcodeStr = new String(barcode, 0, barcodelen);
         android.util.Log.i("debug", "----code--" + barcodeStr);
         if (strArr.contains(new MyContent(barcodeStr))) {
-            toast.setText("不能重复扫码！");
-            toast.show();
+            ToastUtils.showShort("不能重复扫码！");
             return;
         }
         if (!isScaning) {
             if (strArr.size() >= MAX_BAR) {
-                toast.setText("一次扫入的条码不能超过【" + MAX_BAR + "】条");
+                ToastUtils.showShort("一次扫入的条码不能超过【" + MAX_BAR + "】条");
             } else {
                 isScaning = true;
                 checkBarCode(barcodeStr);
@@ -294,12 +287,10 @@ public class BaseListActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
                 if (e instanceof SocketTimeoutException) {
-                    toast.setText("请求超时！");
-                    toast.show();
+                    ToastUtils.showShort("请求超时！");
                 }
                 if (e instanceof ConnectException) {
-                    toast.setText("和服务器连接异常！");
-                    toast.show();
+                    ToastUtils.showShort("和服务器连接异常！");
                 }
             } finally {
                 dialog.cancel();
@@ -343,8 +334,7 @@ public class BaseListActivity extends AppCompatActivity {
         Response response = (Response) hashMap.get("response");
         String ReturnMessage = (String) hashMap.get("resStr");
         if (!response.isSuccessful()) {
-            toast.setText("服务器出错");
-            toast.show();
+            ToastUtils.showShort("服务器出错");
             return;
         }
         if (msg.what == 1) {
@@ -366,8 +356,7 @@ public class BaseListActivity extends AppCompatActivity {
             if (status == -100) {
                 mesg += "，或者扫描不清晰";
             }
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         } else {
             strArr.add(new MyContent(barcodeStr));
             renderList();
@@ -383,8 +372,7 @@ public class BaseListActivity extends AppCompatActivity {
         int status = Integer.parseInt(barCodeBean.getStatus());
         String mesg = barCodeBean.getMsg();
         if (status != 0) {
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         } else {
             new AlertDialog.Builder(this).setTitle("单号:【" + mesg + "】")
                     .setIcon(android.R.drawable.ic_dialog_info)

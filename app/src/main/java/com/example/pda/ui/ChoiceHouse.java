@@ -22,6 +22,7 @@ import com.example.pda.bean.WhListBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
 import com.example.pda.ui.lists.ListOneActivity;
+import com.example.pda.util.ToastUtils;
 import com.google.gson.Gson;
 
 import org.xutils.view.annotation.ContentView;
@@ -50,7 +51,6 @@ public class ChoiceHouse extends AppCompatActivity {
     @ViewInject(R.id.next)
     private Button nextButton;
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
-    private Toast toast = MyToast.getToast();
     private List<WhBean> WhList = new ArrayList<>();
     private String whId;
     private UserBean userBean;
@@ -61,6 +61,11 @@ public class ChoiceHouse extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         x.view().inject(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setinfo = getSharedPreferences("GlobalData", Context.MODE_PRIVATE);
         userBean = new Gson().fromJson(setinfo.getString("user", ""), UserBean.class);
         Intent intent = getIntent();
@@ -71,8 +76,7 @@ public class ChoiceHouse extends AppCompatActivity {
     @Event(value = R.id.house_name, type = View.OnClickListener.class)
     private void editTextOnClick(View view) {
         if (WhList.size() <= 0) {
-            toast.setText("无数据");
-            toast.show();
+            ToastUtils.showShort("无数据");
         } else {
             OptionsPickerView pvOptions = new OptionsPickerView.Builder(ChoiceHouse.this, new OptionsPickerView.OnOptionsSelectListener() {
                 @Override
@@ -105,8 +109,7 @@ public class ChoiceHouse extends AppCompatActivity {
     private void nextOnClick(View view) {
         Log.i("editText的值", String.valueOf(editText.getText()));
         if ("".equals(String.valueOf(editText.getText()))) {
-            toast.setText("请先选择仓库");
-            toast.show();
+            ToastUtils.showShort("请先选择仓库");
         } else {
             Intent i = new Intent(ChoiceHouse.this, ListOneActivity.class);
             i.putExtra("whId", whId);
@@ -135,13 +138,10 @@ public class ChoiceHouse extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
-                        toast.setText("请求超时！");
-                        toast.show();
+                        ToastUtils.showShort("请求超时！");
                     }
                     if (e instanceof ConnectException) {
-                        toast.setText("和服务器连接异常！");
-                        toast.show();
-
+                        ToastUtils.showShort("和服务器连接异常！");
                     }
                 }
             }
@@ -155,8 +155,7 @@ public class ChoiceHouse extends AppCompatActivity {
             Response response = (Response) hashMap.get("response");
             String ReturnMessage = (String) hashMap.get("resStr");
             if (!response.isSuccessful()) {
-                toast.setText("服务器出错");
-                toast.show();
+                ToastUtils.showShort("服务器出错");
                 return;
             }
             if (msg.what == 1) {

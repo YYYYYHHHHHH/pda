@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import com.example.pda.base.BaseListActivity;
 import com.example.pda.bean.BarCodeBean;
+import com.example.pda.util.ToastUtils;
 import com.example.pda.commpont.MyContent;
 import com.google.gson.Gson;
 import com.zyao89.view.zloading.ZLoadingDialog;
@@ -43,8 +44,7 @@ public class ListOneActivity extends BaseListActivity {
             if (status == -100) {
                 mesg += "，或者扫描不清晰";
             }
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         } else {
             strArr.add(new MyContent(barcodeStr, barCodeBean.getProId()));
             renderList();

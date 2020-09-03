@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 import com.example.pda.R;
 import com.example.pda.base.BaseListActivity;
 import com.example.pda.bean.BarCodeTwoBean;
-import com.example.pda.commpont.MyContent;
+import com.example.pda.util.ToastUtils;
 import com.example.pda.commpont.MyTwoContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -56,8 +55,7 @@ public class ListTwoActivity extends BaseListActivity {
             if (status == -100) {
                 mesg += "，或者扫描不清晰";
             }
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         } else {
             if (!checkNumberOfGroups()) return;
             if (!"0".equals(barCodeTwoBean.getCustId()) && !barCodeTwoBean.getCustId().equals(csId)) {
@@ -67,8 +65,7 @@ public class ListTwoActivity extends BaseListActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (strArr.contains(new MyTwoContent(barcodeStr))) {
-                                    toast.setText("条码已存在！");
-                                    toast.show();
+                                    ToastUtils.showShort("条码已存在！");
                                     return;
                                 }
                                 MyTwoContent myTwoContent = new MyTwoContent(barcodeStr, barCodeTwoBean.getInvClass());
@@ -122,12 +119,10 @@ public class ListTwoActivity extends BaseListActivity {
             public void onClick(View v) {
                 final String code = inputCode.getText().toString();
                 if ("".equals(code)) {
-                    toast.setText("不能添加空条码");
-                    toast.show();
+                    ToastUtils.showShort("不能添加空条码");
                 } else {
                     if (strArr.contains(new MyTwoContent(code))) {
-                        toast.setText("不能重复扫码");
-                        toast.show();
+                        ToastUtils.showShort("不能重复扫码");
                         return;
                     }
                     if (checkNumberOfGroups()) {
@@ -163,8 +158,7 @@ public class ListTwoActivity extends BaseListActivity {
         if ("空".equals(numberOfGroups) || strArr.size() < Integer.parseInt(numberOfGroups)) {
             return true;
         } else {
-            toast.setText("条码的数量不能多于选定组托数量");
-            toast.show();
+            ToastUtils.showShort("条码的数量不能多于选定组托数量");
             return false;
         }
     }

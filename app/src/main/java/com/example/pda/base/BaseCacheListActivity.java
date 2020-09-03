@@ -13,6 +13,7 @@ import com.example.pda.bean.GetBarDetailsBean;
 import com.example.pda.bean.GetBarDetailsRows;
 import com.example.pda.bean.PDASavedBean;
 import com.example.pda.bean.PDASavedRows;
+import com.example.pda.util.ToastUtils;
 import com.example.pda.commpont.MyContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -109,8 +110,7 @@ public class BaseCacheListActivity extends BaseListActivity{
         Response response = (Response) hashMap.get("response");
         String ReturnMessage = (String) hashMap.get("resStr");
         if (!response.isSuccessful()) {
-            toast.setText("服务器出错");
-            toast.show();
+            ToastUtils.showShort("服务器出错");
             return;
         }
         if (msg.what == 1) {
@@ -137,8 +137,7 @@ public class BaseCacheListActivity extends BaseListActivity{
             if (status == -100) {
                 mesg += "，或者扫描不清晰";
             }
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         } else {
             strArr.add(new MyContent(barcodeStr, barCodeBean.getbTrue()));
             allSize += Integer.parseInt(barCodeBean.getiNum());
@@ -183,8 +182,7 @@ public class BaseCacheListActivity extends BaseListActivity{
     protected void DeletLocalSaveCloudPostProcessing(String ReturnMessage) {
         BarCodeBean bean = new Gson().fromJson(ReturnMessage, BarCodeBean.class);
         if (!"0".equals(bean.getStatus())) {
-            toast.setText(bean.getMsg());
-            toast.show();
+            ToastUtils.showShort(bean.getMsg());
         }
         allSize = 0;
         initPicking();
@@ -253,8 +251,7 @@ public class BaseCacheListActivity extends BaseListActivity{
             @Override
             public void onClick(View v) {
                 if (strArr.size() <= 0) {
-                    toast.setText("没有要提交的条码");
-                    toast.show();
+                    ToastUtils.showShort("没有要提交的条码");
                     return;
                 }
                 new AlertDialog.Builder(BaseCacheListActivity.this).setTitle("提示")

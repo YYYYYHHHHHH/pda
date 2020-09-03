@@ -4,7 +4,10 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.example.pda.ui.LoginActivity;
-
+/**
+*  @author YZHY
+*  @describe 获取单例Toast 已经弃用
+*/
 public class MyToast {
     private static Toast toast = null;
     private static Object object = new Object();

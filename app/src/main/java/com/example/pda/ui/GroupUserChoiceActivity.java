@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +24,10 @@ import com.example.pda.bean.CustomerBean;
 import com.example.pda.bean.CustomerListBean;
 import com.example.pda.bean.globalbean.MyOkHttpClient;
 import com.example.pda.bean.globalbean.MyToast;
+import com.example.pda.util.ToastUtils;
 import com.google.gson.Gson;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -59,13 +63,13 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
     private TextView groupnum;
 
     private final OkHttpClient client = MyOkHttpClient.getOkHttpClient();
-    private Toast toast = MyToast.getToast();
     private List<CustomerBean> customerList;
     private String csId = "";
     private String csName = "";
     private List<String> numList;
     private String numberOfGroups = "12";
     private SharedPreferences setinfo;
+    private ZLoadingDialog dialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +90,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
     @Event(R.id.next)
     private void initNext(View view) {
         if ("".equals(csId)) {
-            toast.setText("请先选择客户！");
-            toast.show();
+            ToastUtils.showShort("请先选择客户！");
             return;
         }
         Intent intent = new Intent(GroupUserChoiceActivity.this, ListTwoActivity.class);
@@ -148,6 +151,11 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
                 .url("http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/GetCustList?partName=" + nameKey)
                 .get()
                 .build();
+        dialog = new ZLoadingDialog(GroupUserChoiceActivity.this);
+        dialog.setLoadingBuilder(Z_TYPE.DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("加载中")
+                .show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -162,14 +170,13 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (e instanceof SocketTimeoutException) {
-                        toast.setText("请求超时！");
-                        toast.show();
+                        ToastUtils.showShort("请求超时！");
                     }
                     if (e instanceof ConnectException) {
-                        toast.setText("和服务器连接异常！");
-                        toast.show();
-
+                        ToastUtils.showShort("和服务器连接异常！");
                     }
+                } finally {
+                    dialog.cancel();
                 }
             }
         }).start();
@@ -231,8 +238,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
             Response response = (Response) hashMap.get("response");
             String ReturnMessage = (String) hashMap.get("resStr");
             if (!response.isSuccessful()) {
-                toast.setText("服务器出错");
-                toast.show();
+                ToastUtils.showShort("服务器出错");
                 return;
             }
             if (msg.what == 1) {
@@ -271,8 +277,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
                     pvOptions.setPicker(customerList);//条件选择器
                     pvOptions.show();
                 } else {
-                    toast.setText("没有数据！请检查输入的关键字");
-                    toast.show();
+                    ToastUtils.showShort("没有数据！请检查输入的关键字");
                 }
 
 

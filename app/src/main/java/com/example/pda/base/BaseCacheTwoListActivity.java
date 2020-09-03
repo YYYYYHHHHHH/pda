@@ -10,6 +10,7 @@ import com.example.pda.R;
 import com.example.pda.bean.BarCodeBean;
 import com.example.pda.bean.GetBarDetailsBean;
 import com.example.pda.bean.GetBarDetailsRows;
+import com.example.pda.util.ToastUtils;
 import com.example.pda.commpont.MyContent;
 import com.example.pda.commpont.SlideLayout;
 import com.google.gson.Gson;
@@ -94,8 +95,7 @@ public class BaseCacheTwoListActivity extends BaseListActivity {
         Response response = (Response) hashMap.get("response");
         String ReturnMessage = (String) hashMap.get("resStr");
         if (!response.isSuccessful()) {
-            toast.setText("服务器出错");
-            toast.show();
+            ToastUtils.showShort("服务器出错");
             return;
         }
         if (msg.what == 1) {
@@ -120,8 +120,7 @@ public class BaseCacheTwoListActivity extends BaseListActivity {
         int status = Integer.parseInt(barCodeBean.getStatus());
         String mesg = barCodeBean.getMsg();
         if (status != 0) {
-            toast.setText(mesg);
-            toast.show();
+            ToastUtils.showShort(mesg);
         }
         renderList();
     }
