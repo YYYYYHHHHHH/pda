@@ -4,6 +4,15 @@ public class BarCodeBean {
     private String Status;
     private String Msg;
     private int proId;
+    private boolean Packaged;
+
+    public boolean isPackaged() {
+        return Packaged;
+    }
+
+    public void setPackaged(boolean packaged) {
+        Packaged = packaged;
+    }
 
     public int getProId() {
         return proId;

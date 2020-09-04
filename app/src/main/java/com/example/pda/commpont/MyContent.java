@@ -7,6 +7,15 @@ public class MyContent {
     private String bTrue;
     private String iNum;
     private int proId;
+    private boolean Packaged;
+
+    public boolean isPackaged() {
+        return Packaged;
+    }
+
+    public void setPackaged(boolean packaged) {
+        Packaged = packaged;
+    }
 
     public int getProId() {
         return proId;
@@ -35,6 +44,12 @@ public class MyContent {
     public MyContent(String content, String bTrue) {
         this.content = content;
         this.bTrue = bTrue;
+    }
+
+    public MyContent(String content, int proId, boolean packaged) {
+        this.content = content;
+        this.proId = proId;
+        Packaged = packaged;
     }
 
     public MyContent(String content, String bTrue, String iNum) {

@@ -46,7 +46,7 @@ public class ListOneActivity extends BaseListActivity {
             }
             ToastUtils.showShort(mesg);
         } else {
-            strArr.add(new MyContent(barcodeStr, barCodeBean.getProId()));
+            strArr.add(new MyContent(barcodeStr, barCodeBean.getProId(), barCodeBean.isPackaged()));
             renderList();
         }
     }
@@ -55,7 +55,7 @@ public class ListOneActivity extends BaseListActivity {
     protected void submitBarCode() {
         String url = "http://" + setinfo.getString("Ip", "") + "/FirstPDAServer/home/CommitBarToStock?loginId=" + userBean.getStatus() + "&whId=" + whId;
         for (MyContent myContent : strArr) {
-            url += "&ids=" + myContent.getProId();
+            url += "&ids=" + (myContent.isPackaged() ? "T" : "P") + myContent.getProId();
         }
         final Request request = new Request.Builder()
                 .url(url)
@@ -64,6 +64,4 @@ public class ListOneActivity extends BaseListActivity {
         dialog.setHintText("提交中").show();
         threadPool.execute(new SubmitBarRunable(request));
     }
-
-
 }
