@@ -36,7 +36,7 @@ public class ListThreeActivity extends BaseListActivity {
                 + userBean.getStatus()
                 + "&tDate=" + formatter.format(new Date(System.currentTimeMillis()));
         for (MyContent myContent : strArr) {
-            url += "&ids=" + myContent.getProId();
+            url += "&ids=" + (myContent.isPackaged() ? "T" : "P") + myContent.getProId();
         }
         final Request request = new Request.Builder()
                 .url(url)
@@ -57,7 +57,7 @@ public class ListThreeActivity extends BaseListActivity {
             }
             ToastUtils.showShort(mesg);
         } else {
-            strArr.add(new MyContent(barcodeStr, barCodeBean.getProId()));
+            strArr.add(new MyContent(barcodeStr, barCodeBean.getProId(), barCodeBean.isPackaged()));
             renderList();
         }
     }
