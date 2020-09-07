@@ -72,12 +72,13 @@
         android:text="是否同型号组托"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search" />
+
     <TextView
         android:id="@+id/groupnum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="组托数量为：12件"
+        android:text="组托数量为：空"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/isGroup"
         app:layout_constraintStart_toEndOf="@+id/isGroup"

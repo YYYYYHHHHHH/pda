@@ -67,7 +67,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
     private String csId = "";
     private String csName = "";
     private List<String> numList;
-    private String numberOfGroups = "12";
+    private String numberOfGroups = "空";
     private SharedPreferences setinfo;
     private ZLoadingDialog dialog;
 
@@ -115,7 +115,7 @@ public class GroupUserChoiceActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     numberOfGroups = s;
-                                    groupnum.setText("组托数量为：" + s + "件");
+                                    groupnum.setText("组托数量为：" + s);
                                 }
                             })
                             .setNegativeButton("返回", new DialogInterface.OnClickListener() {
